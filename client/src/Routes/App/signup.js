@@ -13,12 +13,16 @@ function Signup() {
         <div className="signup-container">
             <div className='signup-box'>
                 <span>Welcome!</span>
-                <form className="signup-form">
+                <form className="signup-form" action="http://localhost:8080/register" method="POST">
                     <div className="form-floating">
-                        <input className='form-control' type="email" placeholder="이메일 주소" required />
+                        <input className='form-control' type="email" name='username' placeholder="이메일 주소" required />
                         <label for="floatingInput">Email address</label>
                     </div>
-                    <button type="submit" className='btn btn-primary'>가입</button>
+                    <div className="form-floating">
+                        <input className='form-control' type='password' name='password' placeholder="Password" required />
+                        <label for="floatingPassword">Password</label>
+                    </div>
+                    <button type="button" className='btn btn-primary'>가입</button>
                 </form>
                 <div className='divLine'></div>
                 <div className='signup-social'>
