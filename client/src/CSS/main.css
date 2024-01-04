@@ -1,0 +1,82 @@
+/* 메인 페이지 기본 구조 */
+.main-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.banner-box {
+    position: absolute;
+    left: 0;
+    width: 65%;
+    height: 100%;
+}
+
+.account-box {
+    position: absolute;
+    right: 0;
+    width: 35%;
+    height: 100%;
+    background-color: black;
+}
+
+
+/* 배너 이미지 */
+.banner-box {
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.banner-box img {
+    height: 100%;
+    opacity: 1;
+}
+
+/* 배너 이미지 On Off */
+.hide {
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+.show {
+    opacity: 1;
+    transition: opacity 1s ease-in-out;
+}
+
+
+/* 로그인 및 회원가입 영역 */
+.start-box {
+    width: 100%;
+    height: 12%;
+    position: absolute;
+    top: 40%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.title-box {
+    color: white;
+    font-size: 29px;
+    font-weight: 500;
+}
+.btn-box {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.acnt-btn {
+    width: 200px;
+    height: 45px;
+    margin: 0 5px 0;
+}
+
+.acnt-btn span {
+    font-weight: bold;
+    font-size: 18px;
+}
