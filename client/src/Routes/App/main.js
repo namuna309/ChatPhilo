@@ -1,9 +1,9 @@
 // CSS
-import '../CSS/main.css';
+import '../../CSS/main.css';
 
 // Component
-import Banner from '../Component/main/Banner';
-import Account from '../Component/main/Account';
+import Banner from '../../Component/main/Banner';
+import Account from '../../Component/main/Account';
 
 
 function Main() {
@@ -16,4 +16,4 @@ function Main() {
     )
 }
 
-export default Main
+export default Main;
