@@ -65,7 +65,7 @@ function Signup() {
                         <label htmlFor="floatingPassword">Password</label>
                     </div>
                     <button type="button" className={`btn btn-primary ${btn_continue}`} onClick={(e) => checkduplicate(username)}>계속</button>
-                    <button type="button" className={`btn btn-primary ${btn_signup}`} onClick={(e) => checkduplicate(username)}>가입</button>
+                    <button type="submit" className={`btn btn-primary ${btn_signup}`}>가입</button>
                 </form>
                 <div className='divLine'></div>
                 <div className='signup-social'>
