@@ -19,6 +19,12 @@ function Signup() {
     const [isInvalid, setIsinvalid] = useState('');
     const [invalidMsg, setInvalidmsg] = useState('duplicate-hide');
     const [invalidtxt, setInvalidtxt] = useState('');
+
+    const [password, setPassword] = useState('');
+    const [btnstatus, setBtn] = useState('button');
+    const [isInvalid_pw, setIsinvalid_pw] = useState('');
+    const [invalidMsg_pw, setInvalidmsg_pw] = useState('duplicate-hide');
+    const [invalidtxt_pw, setInvalidtxt_pw] = useState('');
      
 
     useState(() => {
@@ -28,14 +34,19 @@ function Signup() {
         setIsinvalid('');
         setInvalidmsg('duplicate-hide');
         setInvalidtxt('');
+
+        setIsinvalid_pw('');
+        setInvalidmsg_pw('duplicate-hide');
+        setInvalidtxt_pw('');
     }, []);
 
     // input에서 blur했을 때 이메일 중복 확인
     function checkDuplicate_onblur(id) {
+        let trimed_id = id.trim();
         // 이메일 형식 확인
-        let is_validform = /\S+@\S+\.\S+/.test(id);
+        let is_validform = /\S+@\S+\.\S+/.test(trimed_id);
 
-        fetch(`http://localhost:8080/checkDuplicate?username=${id}`, {
+        fetch(`http://localhost:8080/checkDuplicate?username=${trimed_id}`, {
             method : 'POST',
         }).then(res => res.text()).then((res) => {
             console.log(res);
@@ -51,7 +62,7 @@ function Signup() {
                 setIsinvalid('is-invalid');
                 setInvalidmsg('');
 
-                if (id == '') setInvalidtxt('이메일 안적음');
+                if (trimed_id == '') setInvalidtxt('이메일 안적음');
                 else if (is_validform == false) setInvalidtxt('이메일 형식 안맞음');
                 else setInvalidtxt('해당 이메일 이미 있음');
 
@@ -66,11 +77,12 @@ function Signup() {
 
     // 계속 버튼 눌렀을 때 이메일 중복 확인
     function checkduplicate_onclick(id) {
+        let trimed_id = id.trim();
         // 이메일 형식 확인
-        let is_validform = /\S+@\S+\.\S+/.test(id);
+        let is_validform = /\S+@\S+\.\S+/.test(trimed_id);
 
         console.log(id);
-        fetch(`http://localhost:8080/checkDuplicate?username=${id}`, {
+        fetch(`http://localhost:8080/checkDuplicate?username=${trimed_id}`, {
             method : 'POST',
         }).then(res => res.text()).then((res) => {
             console.log(res);
@@ -80,7 +92,7 @@ function Signup() {
                 setIsinvalid('is-invalid');
                 setInvalidmsg('');
 
-                if (id == '') setInvalidtxt('이메일 안적음');
+                if (trimed_id == '') setInvalidtxt('이메일 안적음');
                 else if (is_validform == false) setInvalidtxt('이메일 형식 안맞음');
                 else setInvalidtxt('해당 이메일 이미 있음');
             } else if(res == 'false') {
@@ -97,24 +109,45 @@ function Signup() {
         });
     }
 
+    function checkPassword(pw) {
+        let trimed_pw = pw.trim()
+        
+            if (trimed_pw.length == 0) {
+                setIsinvalid_pw('is-invalid');
+                setInvalidmsg_pw('');
+
+                setInvalidtxt_pw('비밀번호 안적음');
+            }
+            else {
+                setIsinvalid_pw('');
+                setInvalidmsg_pw('duplicate-hide');
+                setBtn('submit');
+            }
+        
+    }
+
     return (
         <div className="signup-container">
             <div className='signup-box'>
                 <span>Welcome!</span>
                 <form className="signup-form" action="http://localhost:8080/register" method="POST">
                     <div className={`form-floating ${isInvalid}`}>
-                        <input className={`form-control ${isInvalid}`} type="email" name='username' placeholder="이메일 주소" onChange={(e) => setUsername(e.target.value)} onBlur={(e) => checkDuplicate_onblur(username)} required />
+                        <input className={`form-control ${isInvalid}`} type="email" name='username' placeholder="Email address" onChange={(e) => setUsername(e.target.value)} onBlur={(e) => checkDuplicate_onblur(username)} required />
                         <label htmlFor="floatingInput">Email address</label>
                     </div>
-                    <div class={`invalid-feedback ${invalidMsg}`}>
+                    <div className={`invalid-feedback ${invalidMsg}`}>
                         {invalidtxt}
                     </div>
-                    <div className={`form-floating ${dispPw}`}>
-                        <input className='form-control' type='password' name='password' placeholder="Password" required />
+                    <div className={`form-floating ${dispPw} ${isInvalid_pw}`} >
+                        <input className={`form-control ${isInvalid_pw}`} type='password' name='password' placeholder="Password" onChange={(e) => setPassword(e.target.value)} onBlur={(e) => checkPassword(password)} required />
                         <label htmlFor="floatingPassword">Password</label>
+                        <div className={`invalid-feedback ${invalidMsg_pw}`}>
+                        {invalidtxt_pw}
                     </div>
+                    </div>
+                    
                     <button type="button" className={`btn btn-primary ${btn_continue}`} onClick={(e) => checkduplicate_onclick(username)}>계속</button>
-                    <button type="submit" className={`btn btn-primary ${btn_signup}`}>가입</button>
+                    <button type={btnstatus} className={`btn btn-primary ${btn_signup}`}>가입</button>
                 </form>
                 <div className='divLine'></div>
                 <div className='signup-social'>
