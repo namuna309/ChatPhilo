@@ -135,7 +135,7 @@ app.post('/register', async (req, res) => {
 app.post('/checkDuplicate', async (req, res) => {
     let inputUsername = req.query.username;
     let result = await db.collection('user').findOne({ username: inputUsername })
-    if (result) {
+    if (result || inputUsername.length == 0) {
         res.send(true);
     }
     else {
