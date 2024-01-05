@@ -130,3 +130,15 @@ app.post('/register', async (req, res) => {
     })
     res.redirect('http://localhost:3000/')
 })
+
+// 회원가입 이메일 중복 체크
+app.post('/checkDuplicate', async (req, res) => {
+    let inputUsername = req.query.username;
+    let result = await db.collection('user').findOne({ username: inputUsername })
+    if (result) {
+        res.send(true);
+    }
+    else {
+        res.send(false);
+    }
+}) 

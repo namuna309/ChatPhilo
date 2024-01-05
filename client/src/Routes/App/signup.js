@@ -5,24 +5,67 @@ import '../../CSS/signup.css'
 import iconGoogle from '../../Img/icon/icon-google.png';
 import iconMicrosoft from '../../Img/icon/icon-microsoft.png';
 import iconApple from '../../Img/icon/icon-apple.png';
+
+// Library
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 
 function Signup() {
+    const [username, setUsername] = useState('');
+    const [dispPw, setDispw] = useState('hide');
+    const [btn_continue, setBtncon] = useState('');
+    const [btn_signup, setBtnsign] = useState('hide');
+    const [isInvalid, setIsinvalid] = useState('');
+    const [invalidMsg, setInvalidmsg] = useState('hide');
+    
+
+    useState(() => {
+        setDispw('hide');
+        setBtncon('');
+        setBtnsign('hide');
+        setIsinvalid('');
+        setInvalidmsg('hide');
+    }, []);
+
+    function checkduplicate(id) {
+        console.log(id);
+        fetch(`http://localhost:8080/checkDuplicate?username=${id}`, {
+            method : 'POST',
+        }).then(res => res.text()).then((res) => {
+            console.log(res);
+            if(res == 'false') {
+                setDispw('');
+                setBtncon('hide');
+                setBtnsign('');
+                setIsinvalid('');
+                setInvalidmsg('hide');
+            } 
+            else {
+                setIsinvalid('is-invalid');
+                setInvalidmsg('');
+            }
+        });
+    }
+
     return (
         <div className="signup-container">
             <div className='signup-box'>
                 <span>Welcome!</span>
                 <form className="signup-form" action="http://localhost:8080/register" method="POST">
-                    <div className="form-floating">
-                        <input className='form-control' type="email" name='username' placeholder="이메일 주소" required />
-                        <label for="floatingInput">Email address</label>
+                    <div className={`form-floating ${isInvalid}`}>
+                        <input className={`form-control ${isInvalid}`} type="email" name='username' placeholder="이메일 주소" onChange={(e) => setUsername(e.target.value)} required />
+                        <label htmlFor="floatingInput">Email address</label>
                     </div>
-                    <div className="form-floating">
+                    <div class={`invalid-feedback ${invalidMsg}`}>
+                        이메일 이미 있음
+                    </div>
+                    <div className={`form-floating ${dispPw}`}>
                         <input className='form-control' type='password' name='password' placeholder="Password" required />
-                        <label for="floatingPassword">Password</label>
+                        <label htmlFor="floatingPassword">Password</label>
                     </div>
-                    <button type="button" className='btn btn-primary'>가입</button>
+                    <button type="button" className={`btn btn-primary ${btn_continue}`} onClick={(e) => checkduplicate(username)}>계속</button>
+                    <button type="button" className={`btn btn-primary ${btn_signup}`} onClick={(e) => checkduplicate(username)}>가입</button>
                 </form>
                 <div className='divLine'></div>
                 <div className='signup-social'>
