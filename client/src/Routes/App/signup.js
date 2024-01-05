@@ -18,7 +18,7 @@ function Signup() {
     const [btn_signup, setBtnsign] = useState('hide');
     const [isInvalid, setIsinvalid] = useState('');
     const [invalidMsg, setInvalidmsg] = useState('hide');
-    
+     
 
     useState(() => {
         setDispw('hide');
