@@ -92,7 +92,7 @@ passport.use(new LocalStrategy(async (inputUsername, inputPassword, cb) => {
     if (!result) {
         return cb(null, false, { message: '아이디 DB에 없음' })
     }
-    if (await bcrypt.compare(inputPassword, result.password)) {
+    if (await bcrypt.compare(inputPassword, result.password) && result.isVerified) {
         return cb(null, result)
     } 
     if (!result.isVerified) {
