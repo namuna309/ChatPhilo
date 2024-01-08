@@ -67,7 +67,7 @@ app.listen(port, () => {
 
 // 메인
 app.get('/', (req, res) => {
-    res.send('반갑다');
+    return res.redirect('http://localhost:3000/');
 })
 
 
@@ -122,13 +122,22 @@ passport.deserializeUser(async (user, done) => {
 // login 요청
 app.post('/login', async (req, res, next) => {
     passport.authenticate('local', (error, user, info) => {
-        if (error) return res.status(500).json(error)
-        if (!user) return res.status(401).json(info.message)
+        if (error) return res.status(500).json(error);
+        if (!user) return res.redirect('http://localhost:3000/login');
         req.logIn(user, (err) => {
             if (err) return next(err)
-            res.redirect('http://localhost:3000/')
+            return res.redirect('http://localhost:3000/')
         })
     })(req, res, next);
+})
+
+// precheck
+app.post('/precheck', async (req, res) => {
+    let result = await db.collection('user').findOne({ username: req.query.username });
+    if (!result) res.status(401).send();
+    else if (await bcrypt.compare(req.query.password, result.password) == false || !result.isVerified) {
+        return res.status(401).send();
+    } else res.status(200).send();
 })
 
 

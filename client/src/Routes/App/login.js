@@ -7,23 +7,57 @@ import iconMicrosoft from '../../Img/icon/icon-microsoft.png';
 import iconApple from '../../Img/icon/icon-apple.png';
 
 // Library
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import axios from "axios"
 
 function Login() {
+    const navigate = useNavigate();
+
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [dspInvalid, setDspinvalid] = useState('');
+
+    let [submit, setSubmit] = useState(false);
+
+
+    useEffect(() => {
+        setUsername('');
+        setPassword('');
+        setDspinvalid('');
+    }, [])
+
+
+    
+
     return (   
         <div className="login-container">
            <div className='login-box'>
                 <span>Hello! How are you</span>
-                    <form className="login-form" action="http://localhost:8080/login" method="POST">
+                    <form className="login-form">
                         <div className="form-floating">
-                            <input className='form-control' type='email' name='username' placeholder='Email address' required />
-                            <label for="floatingInput">Email address</label>
+                            <input className='form-control' type='email' name='username' placeholder='Email address' onChange={(e) => setUsername(e.target.value)} required />
+                            <label htmlFor="floatingInput">Email address</label>
                         </div>
+                        
                         <div className="form-floating">
-                            <input className='form-control' type='password' name='password'  placeholder="Password" required />
-                            <label for="floatingPassword">Password</label>
+                            <input className='form-control' type='password' name='password'  placeholder="Password" onChange={(e) => setPassword(e.target.value)} required />
+                            <label htmlFor="floatingPassword">Password</label>
                         </div>
-                        <button type="submit" className='btn btn-primary'>계속</button>
+                        <div className={`${dspInvalid}`}></div>
+                        <div className={`invalid-feedback`}>
+                        아이디(로그인 전용 아이디) 또는 비밀번호를 <br/>
+                        잘못 입력했습니다.</div>
+                        <button type="button" className='btn btn-primary' onClick={(e) => {
+                            axios.post('http://localhost:8080/login', {
+                                
+                                    username: username, 
+                                    password: password
+                                }).then((res) => { window.location.href = 'http://localhost:3000'})
+                                .catch((err) => {
+                                    setDspinvalid('is-invalid');
+                                });
+                        }}>계속</button>
                     </form>
                     <div className='divLine'></div>
                     <div className='login-social'>

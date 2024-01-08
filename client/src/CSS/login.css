@@ -37,6 +37,11 @@
     height: 50px;
 }
 
+.invalid-feedback {
+    margin-top: -10px;
+    margin-bottom: 10px;
+}
+
 
 /* 나눔선 */
 .divLine {

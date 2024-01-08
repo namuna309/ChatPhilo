@@ -4,7 +4,7 @@ import iconMicrosoft from '../../Img/icon/icon-microsoft.png';
 import iconApple from '../../Img/icon/icon-apple.png';
 
 // Library
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 
@@ -26,7 +26,7 @@ function SignupBox() {
     const [dispSocial, setDispsocial] = useState('');
      
 
-    useState(() => {
+    useEffect(() => {
         setDispw('duplicate-hide');
         setBtncon('');
         setBtnsign('duplicate-hide');
@@ -135,9 +135,9 @@ function SignupBox() {
                     <div className={`form-floating ${isInvalid}`}>
                         <input className={`form-control ${isInvalid}`} type="email" name='username' placeholder="Email address" onChange={(e) => setUsername(e.target.value)} onBlur={(e) => checkDuplicate_onblur(username)} required />
                         <label htmlFor="floatingInput">Email address</label>
-                    </div>
-                    <div className={`invalid-feedback ${invalidMsg}`}>
+                        <div className={`invalid-feedback ${invalidMsg}`}>
                         {invalidtxt}
+                    </div>
                     </div>
                     <div className={`form-floating ${dispPw} ${isInvalid_pw}`} >
                         <input className={`form-control ${isInvalid_pw}`} type='password' name='password' placeholder="Password" onChange={(e) => setPassword(e.target.value)} onBlur={(e) => checkPassword(password)} required />
