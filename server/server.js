@@ -17,6 +17,8 @@ const session_secret = process.env.SESSION_SECRET;
 // Library Import
 // Express import
 const express = require('express');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const app = express();
 
 // cors import
@@ -44,10 +46,14 @@ const nodemailer = require('nodemailer');
 
 
 // client-server간 통신 셋팅
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:3000', // 클라이언트 주소를 명시적으로 설정
+    credentials: true
+  }));
 app.use(express.json())
+app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.urlencoded({ extended: true }))
-
+app.use(cookieParser(session_secret))
 
 // MongoDB 연결
 let db;
@@ -65,12 +71,6 @@ app.listen(port, () => {
 })
 
 
-// 메인
-app.get('/', (req, res) => {
-    return res.redirect('http://localhost:3000/');
-})
-
-
 // login 및 회원가입
 // Passport library 셋팅
 app.use(passport.initialize())
@@ -78,6 +78,7 @@ app.use(session({
     secret: session_secret,
     resave: false,
     saveUninitialized: false,
+    cookie : {maxAge : 1000 * 60},
     store: MongoStore.create({
         mongoUrl: mongodb_clusterUrl,
         dbName: mongodb_db,
@@ -92,10 +93,10 @@ passport.use(new LocalStrategy(async (inputUsername, inputPassword, cb) => {
     if (!result) {
         return cb(null, false, { message: '아이디 DB에 없음' })
     }
-    if (await bcrypt.compare(inputPassword, result.password) && result.isVerified) {
+    else if (await bcrypt.compare(inputPassword, result.password) && result.isVerified) {
         return cb(null, result)
     } 
-    if (!result.isVerified) {
+    else if (!result.isVerified) {
         return cb(null, false, { message: '이메일 인증 안함'});
     }
     else {
@@ -115,29 +116,23 @@ passport.deserializeUser(async (user, done) => {
     let result = await db.collection('user').findOne({ _id: new ObjectId(user.id) })
     delete result.password
     process.nextTick(() => {
-        return done(null, user)
+        return done(null, result)
     })
 })
+
 
 // login 요청
 app.post('/login', async (req, res, next) => {
     passport.authenticate('local', (error, user, info) => {
         if (error) return res.status(500).json(error);
-        if (!user) return res.redirect('http://localhost:3000/login');
+        if (!user) {
+            return res.redirect('http://localhost:3000/login?state=is-invalid')
+        }
         req.logIn(user, (err) => {
             if (err) return next(err)
-            return res.redirect('http://localhost:3000/')
+            return res.redirect('http://localhost:3000/chat');
         })
-    })(req, res, next);
-})
-
-// precheck
-app.post('/precheck', async (req, res) => {
-    let result = await db.collection('user').findOne({ username: req.query.username });
-    if (!result) res.status(401).send();
-    else if (await bcrypt.compare(req.query.password, result.password) == false || !result.isVerified) {
-        return res.status(401).send();
-    } else res.status(200).send();
+    }) (req, res, next);
 })
 
 
@@ -152,8 +147,6 @@ app.post('/checkDuplicate', async (req, res) => {
         res.send(false);
     }
 })
-
-
 
 // 회원가입을 위한 인증 링크 이메일 발송
 app.post('/send-code', async (req, res) => {
@@ -213,7 +206,7 @@ app.post('/send-code', async (req, res) => {
                 expireDate: expires,
                 isVerified: false,
             })
-            res.redirect('http://localhost:3000/');
+            res.redirect('http://localhost:3000/main');
         }
     });
 
@@ -228,7 +221,7 @@ app.get('/register-verify', async (req, res) => {
     if (result && result.token == req.query.token && now <= result.expireDate) {
         let update_res = await db.collection('user').updateOne({ username: req.query.username }, { $set: {isVerified: true}});
         console.log('인증 성공');
-        res.redirect('http://localhost:3000/');
+        res.redirect('http://localhost:3000');
     } else {
         if(!result) res.send('유저 정보 없음');
         else if(result.token != req.query.token) res.send('토큰이 잘못됨');
@@ -236,6 +229,19 @@ app.get('/register-verify', async (req, res) => {
             res.send('뭔가 잘못된듯');
         }
     }
-    
-    
+})
+
+// 세션확인
+app.get('/session', async (req, res) => {
+    let user_data = req.user;
+    console.log(user_data);
+    return res.send(user_data);
+})
+
+// 로그아웃
+app.post('/logout', (req, res, next) => {
+    req.logout((err) => {
+      if (err) return next(err);
+      return res.status(200).send();
+    }    )
 })
