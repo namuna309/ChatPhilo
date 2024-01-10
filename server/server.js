@@ -106,13 +106,12 @@ passport.use(new GoogleStrategy({
     clientSecret: process.env.GOOGLE_SECRET_KEY,
     callbackURL: "http://localhost:8080/auth/google/callback",},
     async (accessToken, refreshToken, profile, done) => {
-        console.log('google profile : ', profile);
         let user = await db.collection('user').findOne({ googleId: profile.id });
 
         try {
             if (user) done(null, user);
             else if(!user) {
-                let newUser = await db.collection('user').insertOne({ googleId: profile.id, username: profile.displayName });
+                let newUser = await db.collection('user').insertOne({ googleId: profile.id, username: profile.emails[0].value });
                 done(null, newUser);
             }
         }
@@ -271,7 +270,7 @@ app.post('/logout', (req, res, next) => {
 })
 
 // google login
-app.get('/auth/google',  passport.authenticate('google', { scope: ['profile'] }));
+app.get('/auth/google',  passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 app.get('/auth/google/callback', 
   passport.authenticate('google', { failureRedirect: 'http://localhost:3000/login' }),
