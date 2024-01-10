@@ -20,27 +20,22 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const app = express();
-
 // cors import
 const cors = require("cors");
-
 // Passport import
 const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
-
+// Google Passport Strategy
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 // crypto(인증메일 발송 관련) import
 const crypto = require("crypto");
-
 // MongoDB import
 const { ObjectId, MongoClient } = require('mongodb');
-
 // mongodb-connect(세션 db 저장) import
 const MongoStore = require('connect-mongo')
-
 // bcrypt import(비밀번호 해싱)
 const bcrypt = require('bcrypt')
-
 // NodeMailer import(이메일 인증번호 발송)
 const nodemailer = require('nodemailer');
 
@@ -49,11 +44,12 @@ const nodemailer = require('nodemailer');
 app.use(cors({
     origin: 'http://localhost:3000', // 클라이언트 주소를 명시적으로 설정
     credentials: true
-  }));
+}));
 app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser(session_secret))
+
 
 // MongoDB 연결
 let db;
@@ -78,7 +74,7 @@ app.use(session({
     secret: session_secret,
     resave: false,
     saveUninitialized: false,
-    cookie : {maxAge : 1000 * 60},
+    cookie: { maxAge: 1000 * 60 },
     store: MongoStore.create({
         mongoUrl: mongodb_clusterUrl,
         dbName: mongodb_db,
@@ -95,14 +91,39 @@ passport.use(new LocalStrategy(async (inputUsername, inputPassword, cb) => {
     }
     else if (await bcrypt.compare(inputPassword, result.password) && result.isVerified) {
         return cb(null, result)
-    } 
+    }
     else if (!result.isVerified) {
-        return cb(null, false, { message: '이메일 인증 안함'});
+        return cb(null, false, { message: '이메일 인증 안함' });
     }
     else {
         return cb(null, false, { message: '비번불일치' });
     }
 }))
+
+// Google-Passport 로그인 로직
+passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_SECRET_KEY,
+    callbackURL: "http://localhost:8080/auth/google/callback",},
+    async (accessToken, refreshToken, profile, done) => {
+        console.log('google profile : ', profile);
+        let user = await db.collection('user').findOne({ googleId: profile.id });
+
+        try {
+            if (user) done(null, user);
+            else if(!user) {
+                let newUser = await db.collection('user').insertOne({ googleId: profile.id, username: profile.displayName });
+                done(null, newUser);
+            }
+        }
+        catch (err) {
+            console.log(err);
+            done(err);
+        }
+    }
+));
+
+
 
 // Passport serialize
 passport.serializeUser((user, done) => {
@@ -114,7 +135,10 @@ passport.serializeUser((user, done) => {
 // Passport deserialize
 passport.deserializeUser(async (user, done) => {
     let result = await db.collection('user').findOne({ _id: new ObjectId(user.id) })
-    delete result.password
+    if (result && result.password != null) {
+        delete result.password;
+    }
+    
     process.nextTick(() => {
         return done(null, result)
     })
@@ -132,7 +156,7 @@ app.post('/login', async (req, res, next) => {
             if (err) return next(err)
             return res.redirect('http://localhost:3000/chat');
         })
-    }) (req, res, next);
+    })(req, res, next);
 })
 
 
@@ -158,7 +182,7 @@ app.post('/send-code', async (req, res) => {
     // 발송 이메일 주소
     let to_address = req.body.username;
 
-    
+
 
     // Transporter 설정
     let transporter = nodemailer.createTransport({
@@ -185,7 +209,7 @@ app.post('/send-code', async (req, res) => {
             day: 'numeric',
             hour: 'numeric',
             minute: 'numeric',
-          })} 까지 회원 가입 인증을 해주세요.</p>`
+        })} 까지 회원 가입 인증을 해주세요.</p>`
     };
 
     // 메일 발송
@@ -194,7 +218,7 @@ app.post('/send-code', async (req, res) => {
             res.status(500).send('회원가입 중 오류가 발생했습니다.');
         } else {
             console.log('Email sent: ' + info.response);
-            
+
             // 비밀번호 해싱
             let hashed_pw = await bcrypt.hash(req.body.password, 10)
 
@@ -215,16 +239,16 @@ app.post('/send-code', async (req, res) => {
 // register(회원가입) get 요청
 app.get('/register-verify', async (req, res) => {
     let now = new Date();
-    let result = await db.collection('user').findOne({ username: req.query.username} );
+    let result = await db.collection('user').findOne({ username: req.query.username });
     delete result.password;
-    
+
     if (result && result.token == req.query.token && now <= result.expireDate) {
-        let update_res = await db.collection('user').updateOne({ username: req.query.username }, { $set: {isVerified: true}});
+        let update_res = await db.collection('user').updateOne({ username: req.query.username }, { $set: { isVerified: true } });
         console.log('인증 성공');
         res.redirect('http://localhost:3000');
     } else {
-        if(!result) res.send('유저 정보 없음');
-        else if(result.token != req.query.token) res.send('토큰이 잘못됨');
+        if (!result) res.send('유저 정보 없음');
+        else if (result.token != req.query.token) res.send('토큰이 잘못됨');
         else {
             res.send('뭔가 잘못된듯');
         }
@@ -241,7 +265,17 @@ app.get('/session', async (req, res) => {
 // 로그아웃
 app.post('/logout', (req, res, next) => {
     req.logout((err) => {
-      if (err) return next(err);
-      return res.status(200).send();
-    }    )
+        if (err) return next(err);
+        return res.status(200).send();
+    })
 })
+
+// google login
+app.get('/auth/google',  passport.authenticate('google', { scope: ['profile'] }));
+
+app.get('/auth/google/callback', 
+  passport.authenticate('google', { failureRedirect: 'http://localhost:3000/login' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    return res.redirect('http://localhost:3000/chat');
+  });

@@ -24,7 +24,10 @@ function SignupBox() {
     const [invalidtxt_pw, setInvalidtxt_pw] = useState('');
 
     const [dispSocial, setDispsocial] = useState('');
-     
+    
+    const handleLogin = () => {
+        window.open("http://localhost:8080/auth/google", "_self");
+    };
 
     useEffect(() => {
         setDispw('duplicate-hide');
@@ -152,7 +155,7 @@ function SignupBox() {
                 </form>
                 <div className='divLine'></div>
                 <div className={`signup-social ${dispSocial}`}>
-                    <button type="button" className="btn btn-outline-light"><div className='icon google'><img src={iconGoogle}></img></div><span className='jwt-text'>Google 계정으로 가입</span></button>
+                    <button type="button" className="btn btn-outline-light" onClick={handleLogin}><div className='icon google'><img src={iconGoogle}></img></div><span className='jwt-text'>Google 계정으로 계속</span></button>
                     <button type="button" className="btn btn-outline-light"><div className='icon microsoft'><img src={iconMicrosoft}></img></div><span className='jwt-text'>Microsoft Account 계정으로 가입</span></button>
                     <button type="button" className="btn btn-outline-light"><div className='icon apple'><img src={iconApple}></img></div><span className='jwt-text'>Apple 계정으로 가입</span></button>
                 </div>

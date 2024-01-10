@@ -21,6 +21,10 @@ function Login() {
     const [password, setPassword] = useState('');
     const [dspInvalid, setDspinvalid] = useState(invalid);
 
+    const handleLogin = () => {
+        window.open("http://localhost:8080/auth/google", "_self");
+    };
+
     let [submit, setSubmit] = useState(false);
     
     let status;
@@ -77,7 +81,7 @@ function Login() {
                     </form>
                     <div className='divLine'></div>
                     <div className='login-social'>
-                        <button type="button" className="btn btn-outline-light"><div className='icon google'><img src={iconGoogle}></img></div><span className='jwt-text'>Google 계정으로 계속</span></button>
+                        <button type="button" className="btn btn-outline-light" onClick={handleLogin}><div className='icon google'><img src={iconGoogle}></img></div><span className='jwt-text'>Google 계정으로 계속</span></button>
                         <button type="button" className="btn btn-outline-light"><div className='icon microsoft'><img src={iconMicrosoft}></img></div><span className='jwt-text'>Microsoft Account 계정으로 계속</span></button>
                         <button type="button" className="btn btn-outline-light"><div className='icon apple'><img src={iconApple}></img></div><span className='jwt-text'>Apple 계정으로 계속</span></button>
                     </div>
