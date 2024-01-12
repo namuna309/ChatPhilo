@@ -85,7 +85,7 @@ app.use(session({
     secret: session_secret,
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 1000 * 60 },
+    cookie: { maxAge: 1000 * 60 * 60 },
     store: MongoStore.create({
         mongoUrl: mongodb_clusterUrl,
         dbName: mongodb_db,

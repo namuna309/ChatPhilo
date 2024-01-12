@@ -153,6 +153,63 @@
 .chat-dialog-box {
     width: 100%;
     height: 94%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    
+}
+
+.chat-counsler-box {
+    height: auto;
+    width: 100%;
+    padding: 10px 0;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.counsler-icon-box {
+    height: 2.5rem;
+    width: 2.5rem;
+    background-color: gray;
+    margin-right: 0.5rem;
+}
+
+.counsler-text-box {
+    height: auto;
+    width: auto;
+    max-width: 75%;
+    padding: 8px;
+    background-color: blue;
+    border-radius: 10px;
+}
+
+.chat-user-box{
+    height: auto;
+    width: 100%;
+    padding: 10px 0;
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.user-icon-box {
+    height: 2.5rem;
+    width: 2.5rem;
+    background-color: blueviolet;
+    margin-left: 0.5rem;
+}
+
+.user-text-box {
+    height: auto;
+    width: auto;
+    max-width: 75%;
+    padding: 8px;
+    background-color: brown;
+    border-radius: 10px;
 }
 
 .chat-room-box-divider {

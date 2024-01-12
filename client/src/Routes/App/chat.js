@@ -125,7 +125,16 @@ function Chat() {
                 <div className='chat-room-container'>
                     <div className='chat-room-info'></div>
                     <div className='chat-room-box'>
-                        <div className='chat-dialog-box'></div>
+                        <div className='chat-dialog-box'>
+                            <div className='chat-counsler-box'>
+                                <div className='counsler-icon-box'></div>
+                                <div className='counsler-text-box'>아마마마마마마바바바바바</div>
+                            </div>
+                            <div className='chat-user-box'>
+                            <div className='user-icon-box'></div>
+                                <div className='user-text-box'>아마마마마마마바바바바바아마마마마마마바바바바바아마마마마마마바바바바바아마마마마마마바바바바바아마마마마마마바바바바바아마마마마마마바바바바바</div>
+                            </div>
+                        </div>
                         <div className='chat-room-box-divider'></div>
                         <div className='chat-textarea-box'>
                             <div className='chat-textarea-input'>
