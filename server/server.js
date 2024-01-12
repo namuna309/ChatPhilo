@@ -50,6 +50,16 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser(session_secret))
 
+// Socket
+const { createServer } = require('http')
+const { Server } = require('socket.io')
+const server = createServer(app);
+const io = require("socket.io")(server, {
+    cors: {
+      origin: "*",
+      methods: ["GET", "POST"]
+    }
+  });
 
 // MongoDB 연결
 let db;
@@ -62,9 +72,10 @@ new MongoClient(mongodb_clusterUrl).connect().then((client) => {
 
 
 // Server listening
-app.listen(port, () => {
+server.listen(port, () => {
     console.log(`http://localhost:${port} 에서 서버 실행중`)
 })
+
 
 
 // login 및 회원가입
@@ -278,3 +289,45 @@ app.get('/auth/google/callback',
     // Successful authentication, redirect home.
     return res.redirect('http://localhost:3000/chat');
   });
+
+
+
+// Chatting
+// socket
+io.on('connection', (socket) => {
+    console.log(`websocket 연결됨: ${socket.id}`);
+
+    socket.on('ask-join', (room) => {
+        socket.join(room);
+    })
+
+    socket.on('send', (data) => {
+        console.log('유저가 보낸거 : ', data)
+        io.to(data.rid).emit(`braodcast-${data.rid}`, '답장');
+      })
+       
+    
+  })
+
+// 채팅방 개설 및 탐색
+app.get('/c/request', async (req, res) => {
+    let csl = req.query.csl;
+    let chat = await db.collection('chatRooms').findOne({user_id: new ObjectId(req.user._id), counselor: csl});
+    console.log(chat);
+    if (!chat) {
+        let result = await db.collection('chatRooms').insertOne({
+            user_id: req.user._id, 
+            username: req.user.username, 
+            counselor: csl});
+        console.log(result);
+        return res.status(200).send(result.insertedId) 
+    } else {
+        return res.status(200).send(chat._id);
+    }
+})
+
+app.get('/c', async (req, res) => {
+    let rid = req.query.rid;
+    console.log(rid);
+    return res.status(200).send(rid);
+})

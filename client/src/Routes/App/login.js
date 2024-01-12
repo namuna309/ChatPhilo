@@ -82,8 +82,6 @@ function Login() {
                     <div className='divLine'></div>
                     <div className='login-social'>
                         <button type="button" className="btn btn-outline-light" onClick={handleLogin}><div className='icon google'><img src={iconGoogle}></img></div><span className='jwt-text'>Google 계정으로 계속</span></button>
-                        <button type="button" className="btn btn-outline-light"><div className='icon microsoft'><img src={iconMicrosoft}></img></div><span className='jwt-text'>Microsoft Account 계정으로 계속</span></button>
-                        <button type="button" className="btn btn-outline-light"><div className='icon apple'><img src={iconApple}></img></div><span className='jwt-text'>Apple 계정으로 계속</span></button>
                     </div>
             </div>
             <div className='toSignup'><p>계정이 없으신가요? <Link to={'../signup'}>가입하기</Link></p></div>

@@ -156,11 +156,9 @@ function SignupBox() {
                 <div className='divLine'></div>
                 <div className={`signup-social ${dispSocial}`}>
                     <button type="button" className="btn btn-outline-light" onClick={handleLogin}><div className='icon google'><img src={iconGoogle}></img></div><span className='jwt-text'>Google 계정으로 계속</span></button>
-                    <button type="button" className="btn btn-outline-light"><div className='icon microsoft'><img src={iconMicrosoft}></img></div><span className='jwt-text'>Microsoft Account 계정으로 가입</span></button>
-                    <button type="button" className="btn btn-outline-light"><div className='icon apple'><img src={iconApple}></img></div><span className='jwt-text'>Apple 계정으로 가입</span></button>
                 </div>
             </div>
-            <div className='toLogin'><p>이미 계정이 있으신가요? <Link to={'../login'}>로그인</Link></p></div>
+            <div className='toLogin'><p>이미 계정이 있으신가요? <Link to={'./../login'}>로그인</Link></p></div>
         </>
     )
 }
