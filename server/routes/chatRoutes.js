@@ -7,7 +7,7 @@ router.get('/c/request', async (req, res) => {
     const db = getDB();
     let csl = req.query.csl;
     let chat = await db.collection('chatRooms').findOne({ user_id: req.user._id, counselor: csl });
-    console.log(chat);
+    console.log(csl);
     if (!chat) {
         let result = await db.collection('chatRooms').insertOne({
             user_id: req.user._id,

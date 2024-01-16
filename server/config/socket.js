@@ -14,11 +14,12 @@ const setupSocket = (server) => {
 
         socket.on('ask-join', (room) => {
             socket.join(room);
+            console.log(room, '과 join 되었습니다.')
         })
 
-        socket.on('send', (data) => {
+        socket.on('send_message', (data) => {
             console.log('유저가 보낸거 : ', data)
-            io.to(data.rid).emit(`braodcast-${data.rid}`, '답장');
+            io.to(data.rid).emit(`braodcast-${data.rid}`, data);
         })
     })
 

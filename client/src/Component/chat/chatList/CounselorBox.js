@@ -4,8 +4,8 @@ function CounselorBox(props) {
 
     const navigate = useNavigate();
     
-    function requsetChat(e) {
-        fetch(`http://localhost:8080/c/request?csl=${props.counselor}`,{
+    async function requsetChat(e) {
+        await fetch(`http://localhost:8080/c/request?csl=${props.counselor}`,{
             method: "GET",
             headers: {
                 "Content-Type": "application/json; charset=utf-8"

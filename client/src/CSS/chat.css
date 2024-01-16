@@ -43,6 +43,11 @@
     border: 0px;
 }
 
+.active {
+    background-color: #000; /* 활성화 상태일 때의 배경 색상 */
+    color: #fff; /* 활성화 상태일 때의 텍스트 색상 */
+}
+
 .counselor-img-box {
     height: 2.5rem;
     width: 2.5rem;
@@ -160,7 +165,7 @@
     
 }
 
-.chat-counsler-box {
+.chat-counselor-box {
     height: auto;
     width: 100%;
     padding: 10px 0;
@@ -170,14 +175,15 @@
     justify-content: flex-start;
 }
 
-.counsler-icon-box {
+
+.counselor-icon-box {
     height: 2.5rem;
     width: 2.5rem;
     background-color: gray;
     margin-right: 0.5rem;
 }
 
-.counsler-text-box {
+.counselor-text-box {
     height: auto;
     width: auto;
     max-width: 75%;
