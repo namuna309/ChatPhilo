@@ -15,4 +15,6 @@ module.exports = {
   mail_auth_pw: process.env.MAIL_AUTH_PW,
   google_client_id: process.env.GOOGLE_CLIENT_ID,
   google_secret_key: process.env.GOOGLE_SECRET_KEY,
+  openai_api_key: process.env.OPENAI_API_KEY,
+  openai_organization_id: process.env.OPENAI_ORGANIZATION_ID,
 };

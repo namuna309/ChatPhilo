@@ -2,7 +2,14 @@ const express = require('express');
 const router = express.Router();
 const { getDB } = require('./database');
 const ObjectId = require('mongodb').ObjectId;
+const config = require('../config');
+const OpenAI  = require("openai"); 
 
+
+const openai = new OpenAI({
+    apiKey: config.openai_api_key,
+    organization: config.openai_organization_id
+  });
 
 const { Server } = require('socket.io');
 
@@ -38,12 +45,17 @@ const setupSocket = (server) => {
                 })
                 console.log('user 메세지 저장됨', sendMessage);
 
+                // open ai 메세지 생성
+                const response = await openai.chat.completions.create({
+                    messages: [{ role: "user", content: data.content }],
+                    model: "gpt-3.5-turbo",
+                  });
                 // counselor가 보낸 메세지 DB에 저장
                 let counselorMessage = {
                     room_id: new ObjectId(data.room_id),
                     type: 'counselor',
                     counselor: data.counselor,
-                    content: data.content,
+                    content: response.choices[0].message.content,
                     date: new Date()
                 }
                 let replyMessage = await db.collection('chatMessages').insertOne(counselorMessage) 
@@ -54,6 +66,8 @@ const setupSocket = (server) => {
             }
             catch(err) {
                 console.log(err)
+                // counselor 메세지 전송
+                io.to(data.room_id).emit(`braodcast-${data.room_id}`, err);
             }
         })
     })

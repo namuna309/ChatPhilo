@@ -24,6 +24,7 @@ function Chat() {
     const navigate = useNavigate();
     const [message, setMessage] = useState('');
     const [dialog, setDialog] = useState([{counselor: "어서오세요!"}]);
+    const [userTurn, setUserTurn] = useState(false);
 
     const [username, setUsername] = useState();
     const [logoutDsp, setLogout] = useState('logout-hide');
@@ -36,6 +37,7 @@ function Chat() {
 
     const [roomId, setRoomId] = useState();
     const [socket, setSocket] = useState(null);
+    const [isSending, setIsSending] = useState(false);
 
     const { data, isError, isLoading } = useQuery({
         queryKey: ['loginStatus'],
@@ -126,6 +128,8 @@ function Chat() {
                 console.log("New message in room", roomId, ":", message);
                 
                 setDialog(prev => [...prev, message]);
+                setUserTurn(true);
+                setIsSending(false);
             
             }
 
@@ -151,6 +155,8 @@ function Chat() {
             socket.emit("send_message", sendMessage);
             // 전송한 메세지 데이터 추가
             setDialog(prev => [...prev, sendMessage]);
+            setIsSending(true);
+            setUserTurn(false);
             
             // 메시지 입력 필드 초기화
             setMessage(null);
@@ -196,6 +202,7 @@ function Chat() {
 
                                 })
                             }
+                            
 
 
                         </div>
@@ -223,6 +230,7 @@ function Chat() {
                                     let type = message.type
                                     
                                     return (
+                                        
                                         <div className={`chat-${type}-box`}>
                                             <div className={`${type}-icon-box`}></div>
                                             <div className={`${type}-text-box`}>{message.content}</div>
@@ -230,10 +238,25 @@ function Chat() {
                                     )
                                 })
                             }
+                            {
+                                !userTurn && isSending ? (
+                                <div className="chat-counselor-box">
+                                    <div className="counselor-icon-box"></div>
+                                    <div className="counselor-text-box">
+                                        <div className="spinner-border text-light" style={{height: '1.4rem', width:'1.4rem'}} role="status">
+                                            <span className="visually-hidden">Loading...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                ) : null
+                            }
 
 
                         </div>
-                        <div className='chat-room-box-divider'></div>
+                        
+                    </div>
+                    <div className='chat-room-box-divider'></div>
+                    <div className='chat-textarea-container'>
                         <div className='chat-textarea-box'>
                             <div className='chat-textarea-input'>
                                 <input className='msgInput' type='text' placeholder='Message to...' onChange={(e) => setMessage(e.target.value)} onKeyDown={sendMessageUsingEnter} required></input>
@@ -245,6 +268,8 @@ function Chat() {
                             </div>
                         </div>
                     </div>
+                    
+                    
                 </div>
 
             </div >
