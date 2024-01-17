@@ -10,7 +10,7 @@ import { useQuery } from '@tanstack/react-query';
 
 const ENDPOINT = "http://localhost:8080"; // 서버 주소
 
-function checkLoginStatus() {
+async function checkLoginStatus() {
     return fetch(`${ENDPOINT}/session`, {
         method: "get",
         headers: {
@@ -30,6 +30,7 @@ function Chat() {
 
 
     const [counselors, setCounslers] = useState(['Counselor Name1', 'Counselor Name2']);
+    const [counselor, setCounselor] = useState();
     const [activeButtons, setActiveButtons] = useState([false, false]);
 
 
@@ -72,8 +73,10 @@ function Chat() {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const roomid = await response.json();
-            setRoomId(roomid);
+            const data = await response.json();
+            setCounselor(data[0].counselor);
+            setRoomId(data[0].room_id);
+            setDialog(data);
         } catch (error) {
             console.error("Request failed:", error);
         }
@@ -122,7 +125,7 @@ function Chat() {
                 // 메시지 수신 처리
                 console.log("New message in room", roomId, ":", message);
                 
-                setDialog(prev => [...prev, {counselor: message.msg}]);
+                setDialog(prev => [...prev, message]);
             
             }
 
@@ -138,9 +141,16 @@ function Chat() {
     const sendMessage = () => {
         if (socket && roomId && message) {
             // 서버에 메시지 전송
-            socket.emit("send_message", { msg: message, rid: roomId });
+            let sendMessage = { 
+                room_id: roomId,
+                type: 'user',
+                counselor: counselor, 
+                content: message,
+                date: new Date()
+            }
+            socket.emit("send_message", sendMessage);
             // 전송한 메세지 데이터 추가
-            setDialog(prev => [...prev, {user: message}]);
+            setDialog(prev => [...prev, sendMessage]);
             
             // 메시지 입력 필드 초기화
             setMessage(null);
@@ -210,12 +220,12 @@ function Chat() {
                         <div className='chat-dialog-box'>
                             {
                                 dialog.map((message) => {
-                                    let key = Object.keys(message)[0];
-                                    let value = Object.values(message)[0]
+                                    let type = message.type
+                                    
                                     return (
-                                        <div className={`chat-${key}-box`}>
-                                            <div className={`${key}-icon-box`}></div>
-                                            <div className={`${key}-text-box`}>{value}</div>
+                                        <div className={`chat-${type}-box`}>
+                                            <div className={`${type}-icon-box`}></div>
+                                            <div className={`${type}-text-box`}>{message.content}</div>
                                         </div>
                                     )
                                 })
