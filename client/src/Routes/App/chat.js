@@ -7,6 +7,11 @@ import { useNavigate } from "react-router-dom";
 import io from "socket.io-client";
 import { useQuery } from '@tanstack/react-query';
 
+import TextField from '@mui/material/TextField';
+import Input from '@mui/material/Input';
+import InputAdornment from '@mui/material/InputAdornment';
+
+
 
 const ENDPOINT = "http://localhost:8080"; // 서버 주소
 
@@ -232,7 +237,12 @@ function Chat() {
                                     return (
                                         
                                         <div className={`chat-${type}-box`}>
-                                            <div className={`${type}-icon-box`}></div>
+                                            <div className={`${type}-icon-box`}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="white" className="bi bi-person-circle" viewBox="0 0 16 16">
+                                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+                                <path fillRule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
+                            </svg>
+                                            </div>
                                             <div className={`${type}-text-box`}>{message.content}</div>
                                         </div>
                                     )
@@ -258,14 +268,19 @@ function Chat() {
                     <div className='chat-room-box-divider'></div>
                     <div className='chat-textarea-container'>
                         <div className='chat-textarea-box'>
-                            <div className='chat-textarea-input'>
-                                <input className='msgInput' type='text' placeholder='Message to...' onChange={(e) => setMessage(e.target.value)} onKeyDown={sendMessageUsingEnter} required></input>
-                            </div>
-                            <div className='chat-enter' onClick={sendMessage}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="rgb(210, 210, 210)" className="bi bi-arrow-up-circle-fill" viewBox="0 0 16 16">
+                            
+                            <Input
+          classname="msgInput"
+          endAdornment={
+            <InputAdornment position="end">
+              <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="rgb(0, 0, 0)" className="bi bi-arrow-up-circle-fill" viewBox="0 0 16 16">
                                     <path d="M16 8A8 8 0 1 0 0 8a8 8 0 0 0 16 0m-7.5 3.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707z" />
                                 </svg>
-                            </div>
+            </InputAdornment>
+          }
+          placeholder='Message to...' variant="standard" onChange={(e) => setMessage(e.target.value)} onKeyDown={sendMessageUsingEnter} required
+        /> 
+                         
                         </div>
                     </div>
                     
