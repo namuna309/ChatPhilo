@@ -4,10 +4,8 @@ import '../../CSS/chat.css'
 // Library
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import io from "socket.io-client";
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 
-import TextField from '@mui/material/TextField';
 import Input from '@mui/material/Input';
 import InputAdornment from '@mui/material/InputAdornment';
 
@@ -25,23 +23,40 @@ async function checkLoginStatus() {
     }).then((res) => res.json());
 }
 
+// 메시지 전송 함수
+const postMessage = async (thread_id) => {
+    const url = new URL(`${ENDPOINT}/c/getResp`);
+        url.searchParams.append('tId', thread_id);
+    const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json; charset=utf-8'
+        },
+        credentials: 'include'
+    });
+
+    if (!response.ok) {
+        alert('Network response was not ok');
+    }
+
+    return response.json();
+};
+
 function Chat() {
     const navigate = useNavigate();
     const [message, setMessage] = useState('');
-    const [dialog, setDialog] = useState([{counselor: "어서오세요!"}]);
-    const [userTurn, setUserTurn] = useState(false);
+    const [dialog, setDialog] = useState([]);
 
     const [username, setUsername] = useState();
     const [logoutDsp, setLogout] = useState('logout-hide');
 
 
-    const [counselors, setCounslers] = useState(['Counselor Name1', 'Counselor Name2']);
+    const [counselors, setCounslers] = useState(['Schopenhauer', 'Counselor Name2']);
     const [counselor, setCounselor] = useState();
     const [activeButtons, setActiveButtons] = useState([false, false]);
 
 
-    const [roomId, setRoomId] = useState();
-    const [socket, setSocket] = useState(null);
+    const [threadId, setThreadId] = useState();
     const [isSending, setIsSending] = useState(false);
 
     const { data, isError, isLoading } = useQuery({
@@ -58,15 +73,27 @@ function Chat() {
         }
     }, [data, isError, isLoading])
 
+    
 
+    const { mutate, isPending } = useMutation({
+        mutationFn: postMessage, 
+        onSuccess: async (reply) => {
+            // 서버 응답에 따라 대화 목록 업데이트
+            setDialog(prev => [...prev, reply])
+        },
+        onError: (error) => {
+            // 에러 처리
+            console.error('Error posting message:', error);
+        },
+    });
+    
 
     const counslerClick = async (index) => {
 
         setActiveButtons(activeButtons.map((_, i) => i === index));
         // 요청 URL 구성
-        const url = new URL('http://localhost:8080/c/request');
+        const url = new URL(`${ENDPOINT}/c/request`);
         url.searchParams.append('csl', counselors[index]);
-        console.log(url)
         try {
             const response = await fetch(url, {
                 method: "GET",
@@ -81,20 +108,23 @@ function Chat() {
             }
 
             const data = await response.json();
-            setCounselor(data[0].counselor);
-            setRoomId(data[0].room_id);
-            setDialog(data);
+            console.log(data);
+            setCounselor(data.counselor);
+            setThreadId(data.thread_id);
+            return data.thread_id;
+            
         } catch (error) {
             console.error("Request failed:", error);
         }
     };
 
+    const retrieveMassages = async (thread_id) => {
+        const url = new URL(`${ENDPOINT}/c/msglist`);
+        url.searchParams.append('tId', thread_id);
 
-    // 로그아웃
-    const logoutClick = async () => {
         try {
-            const response = await fetch('http://localhost:8080/logout', {
-                method: "POST",
+            const response = await fetch(url, {
+                method: "GET",
                 headers: {
                     "Content-Type": "application/json; charset=utf-8"
                 },
@@ -105,73 +135,83 @@ function Chat() {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
+            const data = await response.json();
+            
+            setDialog(data);
+        } catch (error) {
+            console.error("Request failed:", error);
+        }
+    }
+
+    const createMassage = async () => {
+        const url = new URL(`${ENDPOINT}/c/createMsg`);
+        url.searchParams.append('tId', threadId);
+
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8"
+                },
+                credentials: 'include',
+                body: JSON.stringify({content: message})
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const createdMsg = await response.json();
+
+            setDialog(prev => [...prev, createdMsg])
+        } catch (error) {
+            console.error("Request failed:", error);
+        }
+    }
+
+
+    // 로그아웃
+    const logoutClick = async () => {
+        try {
+            const response = await fetch(`${ENDPOINT}/logout`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8"
+                },
+                credentials: 'include',
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            console.log('로그아웃 성공')
             window.location.href = 'http://localhost:3000'
         } catch (error) {
             console.error("Request failed:", error);
         }
     }
 
-    // 소켓 연결
-    useEffect(() => {
-        // Socket 연결
-        const newSocket = io(ENDPOINT, {
-            cors: { origin: '*' }
-        });
-        setSocket(newSocket);
-
-        return () => newSocket.disconnect(); // 컴포넌트 언마운트 시 연결 해제
-    }, []);
-
-    useEffect(() => {
-
-        if (socket && roomId) {
-            // 서버에 room 가입 요청
-            socket.emit("ask-join", roomId);
-
-            const receiveMessage = (message) => {
-                // 메시지 수신 처리
-                console.log("New message in room", roomId, ":", message);
-                
-                setDialog(prev => [...prev, message]);
-                setUserTurn(true);
-                setIsSending(false);
-            
-            }
-
-            socket.on(`braodcast-${roomId}`, receiveMessage );
-
-            return () => {
-                socket.off(`braodcast-${roomId}`, receiveMessage);
-            }
-        }
-    }, [socket, roomId]);
-
-    // 메세지 전송
-    const sendMessage = () => {
-        if (socket && roomId && message) {
-            // 서버에 메시지 전송
-            let sendMessage = { 
-                room_id: roomId,
-                type: 'user',
-                counselor: counselor, 
-                content: message,
-                date: new Date()
-            }
-            socket.emit("send_message", sendMessage);
-            // 전송한 메세지 데이터 추가
-            setDialog(prev => [...prev, sendMessage]);
-            setIsSending(true);
-            setUserTurn(false);
-            
+    const sendMessage = async () => {
+        console.log(threadId);
+        if (threadId && message) {
+            await createMassage();
+                           
             // 메시지 입력 필드 초기화
             setMessage(null);
-            document.getElementsByClassName('msgInput')[0].value = null;
+            document.getElementsByTagName('Input')[0].value = null;
+
+            // 전송한 메세지 데이터 추가
+
+            // 메시지 전송 뮤테이션 실행 
+            mutate(threadId);
+            
 
         }
     };
 
     const sendMessageUsingEnter = (e) => {
-        if (e.key === 'Enter') {
+        if (e.keyCode == 13) {
+            console.log('엔터키');
             sendMessage(); // 작성한 댓글 post 요청하는 함수 
         }
     };
@@ -190,7 +230,7 @@ function Chat() {
                                 counselors.map((name, index) => {
                                     return (
                                         <div className='counselor-container' key={name}>
-                                            <button type='button' className={`btn btn-dark counselor-box ${activeButtons[index] ? 'active' : ''}`} onClick={() => counslerClick(index)}
+                                            <button type='button' className={`btn btn-dark counselor-box ${activeButtons[index] ? 'active' : ''}`} onClick={async () => {let thread_id = await counslerClick(index); retrieveMassages(thread_id)}}
                                             >
                                                 <div className='counselor-img-box btn'>
                                                     <div className='counselor-img'></div>
@@ -232,7 +272,9 @@ function Chat() {
                         <div className='chat-dialog-box'>
                             {
                                 dialog.map((message) => {
-                                    let type = message.type
+                                    let type = '';
+                                    if (message.role == 'user') type = 'user';
+                                    else type = 'counselor'
                                     
                                     return (
                                         
@@ -243,13 +285,13 @@ function Chat() {
                                 <path fillRule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
                             </svg>
                                             </div>
-                                            <div className={`${type}-text-box`}>{message.content}</div>
+                                            <div className={`${type}-text-box`}>{message.content[0].text.value}</div>
                                         </div>
                                     )
                                 })
                             }
                             {
-                                !userTurn && isSending ? (
+                                isPending ? (
                                 <div className="chat-counselor-box">
                                     <div className="counselor-icon-box"></div>
                                     <div className="counselor-text-box">
@@ -270,7 +312,7 @@ function Chat() {
                         <div className='chat-textarea-box'>
                             
                             <Input
-          classname="msgInput"
+          className="msgInput"
           endAdornment={
             <InputAdornment position="end">
               <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="rgb(0, 0, 0)" className="bi bi-arrow-up-circle-fill" viewBox="0 0 16 16">

@@ -38,31 +38,76 @@ const setupSocket = (server) => {
                 // user가 보낸 메세지 DB에 저장
                 let sendMessage = await db.collection('chatMessages').insertOne({
                     room_id: new ObjectId(data.room_id),
+                    thread_id: data.thread_id,
                     type: data.type,
                     counselor: data.counselor,
                     content: data.content,
-                    date: data.date,
+                    date: new Date(data.date),
                 })
                 console.log('user 메세지 저장됨', sendMessage);
-
+                
                 // open ai 메세지 생성
-                const response = await openai.chat.completions.create({
-                    messages: [{ role: "user", content: data.content }],
-                    model: "gpt-3.5-turbo",
-                  });
-                // counselor가 보낸 메세지 DB에 저장
-                let counselorMessage = {
-                    room_id: new ObjectId(data.room_id),
-                    type: 'counselor',
-                    counselor: data.counselor,
-                    content: response.choices[0].message.content,
-                    date: new Date()
-                }
-                let replyMessage = await db.collection('chatMessages').insertOne(counselorMessage) 
-                console.log('counselor 메세지 저장됨', replyMessage);
+                let massages = await  openai.beta.threads.messages.create(
+                    data.thread_id,
+                    {
+                        role:'user',
+                        content: data.content
+                    }
+                )
 
-                // counselor 메세지 전송
-                io.to(data.room_id).emit(`braodcast-${data.room_id}`, counselorMessage);
+                // 메시지 실행
+                let run = await openai.beta.threads.runs.create(
+                    data.thread_id,
+                    { assistant_id: config.openai_assistant_id_schopenhauer }
+                  );
+                
+                const maxAttempts = 20; // 최대 시도 횟수
+                let attempts = 0;
+                let is_completed = false;
+
+                while(attempts < maxAttempts){ 
+                    var runStatus = await openai.beta.threads.runs.retrieve(
+                        data.thread_id,
+                        run.id
+                      );
+                      
+                    
+
+                    if (runStatus.status === 'completed') {
+                        console.log('메세지 발송 및 답변 생성 완료');
+                        is_completed = true;
+                        break
+                    } else {
+                        setTimeout(async() => {
+                            console.log('상태 재확인')
+                        }, 1000); 
+                        
+                        attempts++;
+                    } 
+                }
+                
+                if (is_completed){
+                    massages = await openai.beta.threads.messages.list(
+                        data.thread_id
+                    );
+
+                    // counselor가 보낸 메세지 DB에 저장
+                    let counselorMessage = {
+                        room_id: new ObjectId(data.room_id),
+                        thread_id: data.thread_id,
+                        type: 'counselor',
+                        counselor: data.counselor,
+                        content: massages.data[0].content[0].text.value,
+                        date: new Date()
+                    }
+                    let replyMessage = await db.collection('chatMessages').insertOne(counselorMessage) 
+                    console.log('counselor 메세지 저장됨', replyMessage);
+
+                    // counselor 메세지 전송
+                    io.to(data.room_id).emit(`braodcast-${data.room_id}`, counselorMessage);
+                } else {
+                    console.log('답변 생성 시간 초과');
+                }
             }
             catch(err) {
                 console.log(err)
@@ -74,5 +119,6 @@ const setupSocket = (server) => {
 
     return io;
 };
+
 
 module.exports = setupSocket;

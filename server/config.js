@@ -17,4 +17,5 @@ module.exports = {
   google_secret_key: process.env.GOOGLE_SECRET_KEY,
   openai_api_key: process.env.OPENAI_API_KEY,
   openai_organization_id: process.env.OPENAI_ORGANIZATION_ID,
+  openai_assistant_id_schopenhauer: process.env.OPENAI_ASSISTANT_ID_SCHOPENHAUER,
 };
