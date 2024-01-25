@@ -1,3 +1,7 @@
+// CSS
+import '../../../CSS/chat/Sidebar/CounselorList.css'
+
+// Library
 import React from 'react';
 
 /**
@@ -13,11 +17,11 @@ import React from 'react';
 
 const CounselorList = ({ counselors, activeButtons, onCounselorClick }) => {
     return (
-        <>
+        <div className='chat-list'>
             {counselors.map((name, index) => (
                 <div className='counselor-container' key={name}>
-                    <button 
-                        type='button' 
+                    <button
+                        type='button'
                         className={`btn btn-dark counselor-box ${activeButtons[index] ? 'active' : ''}`}
                         onClick={() => onCounselorClick(index)}
                     >
@@ -33,7 +37,7 @@ const CounselorList = ({ counselors, activeButtons, onCounselorClick }) => {
                     </button>
                 </div>
             ))}
-        </>
+        </div>
     );
 };
 

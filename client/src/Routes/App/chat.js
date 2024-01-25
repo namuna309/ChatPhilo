@@ -1,5 +1,5 @@
 // CSS
-import '../../CSS/chat.css'
+import '../../CSS/chat/chat.css'
 
 // Library
 import { useEffect, useState } from "react";
@@ -7,10 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { useQuery, useMutation } from '@tanstack/react-query';
 
 // Component
-import CounselorList from '../../Component/chat/CounselorList';
-import AccountControls from '../../Component/chat/AccountControls';
-import ChatDialogBox from '../../Component/chat/ChatDialogBox';
-import ChatInputBox from '../../Component/chat/ChatInputBox';
+import Sidebar from '../../Component/chat/Sidebar';
+import ChatRoom from '../../Component/chat/ChatRoom';
 
 // API
 import { checkLoginStatus, postMessage, createMessage, retrieveMessages, logoutClick, requestCounselor } from '../../API/chat/api';
@@ -48,9 +46,6 @@ function Chat() {
         }
     }, [data, isError])
 
-    // 대화 기록 변화에 대한 useEffect
-    useEffect(() => { console.log(dialog); }, [dialog]);
-
     // 상담사 클릭 처리 함수
     const counslerClick = async (index) => {
         setActiveButtons(activeButtons.map((_, i) => i === index));
@@ -75,7 +70,6 @@ function Chat() {
     // 상담사 클릭 핸들러
     const handleCounselorClick = async (index) => {
         let counselorData = await counslerClick(index);
-        console.log(counselorData);
         setThreadId(counselorData.thread_id);
         let thread_id = counselorData.thread_id;
         let dialogs = await retrieveMessages(thread_id);
@@ -102,37 +96,8 @@ function Chat() {
     // 채팅 컴포넌트 UI 렌더링
     return (
         <div className="chat-container">
-            <div className='chat-list-container'>
-                <div className='chat-list-box'>
-                    <div className='chat-list'>
-                        <CounselorList
-                            counselors={counselors}
-                            activeButtons={activeButtons}
-                            onCounselorClick={handleCounselorClick}
-                        />
-                    </div>
-                    <AccountControls
-                        username={username}
-                        logoutDsp={logoutDsp}
-                        onLogoutClick={logoutClick}
-                        onAccountClick={handleAccountClick}
-                    />
-                </div>
-            </div>
-            <div className='chat-room-container'>
-                <div className='chat-room-info'></div>
-                <div className='chat-room-box'>
-                    <ChatDialogBox dialog={dialog} isPending={isPending} />
-                </div>
-                <div className='chat-room-box-divider'></div>
-                <div className='chat-textarea-container'>
-                    <ChatInputBox
-                        onMessageChange={handleMessageChange}
-                        onMessageSend={handleMessageSend}
-                    />
-                </div>
-            </div>
-
+            <Sidebar counselors={counselors} activeButtons={activeButtons} onCounselorClick={handleCounselorClick} username={username} logoutDsp={logoutDsp} onLogoutClick={logoutClick} onAccountClick={handleAccountClick} />
+            <ChatRoom dialog={dialog} isPending={isPending} onMessageChange={handleMessageChange} onMessageSend={handleMessageSend} />
         </div >
     )
 }

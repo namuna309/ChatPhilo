@@ -1,0 +1,14 @@
+.sidebar-container {
+    position: absolute;
+    left: 0;
+    background-color: black;
+    width: 17%;
+    height: 100%;
+    padding: 20px 5px;
+}
+
+.sidebar-box {
+    position: relative;
+    height: 100%;
+    width: 100%;
+}

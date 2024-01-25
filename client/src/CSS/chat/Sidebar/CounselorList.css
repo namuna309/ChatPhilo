@@ -1,0 +1,62 @@
+.chat-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.counselor-container {
+    width: 100%;
+    height: 50px;
+    padding: 2px 8px;
+}
+
+.counselor-box {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: black;
+    border-radius: 10px;
+    border: 0px;
+}
+
+.active {
+    background-color: #000; /* 활성화 상태일 때의 배경 색상 */
+    color: #fff; /* 활성화 상태일 때의 텍스트 색상 */
+}
+
+.counselor-img-box {
+    height: 2.5rem;
+    width: 2.5rem;
+    padding: 3px;
+}
+
+.counselor-img {
+    height: 100%;
+    width: 100%;
+    border-radius: 99999px;
+    background-color: yellow;
+}
+
+.counselor-name {
+    height: 100%;
+    width: 68%;
+    margin: 0 5px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-weight: 500;
+    color: white;
+}
+
+.counselor-link-box {
+    height: 100%;
+    width: 10%;
+}
+
+.counselor-link-img {
+    width: 100%;
+}

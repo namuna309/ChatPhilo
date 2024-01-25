@@ -1,3 +1,7 @@
+// CSS
+import '../../../CSS/chat/Sidebar/AccountControls.css'
+
+// Library
 import React from 'react';
 
 /**
@@ -13,10 +17,11 @@ import React from 'react';
 
 const AccountControls = ({ username, logoutDsp, onLogoutClick, onAccountClick }) => {
     return (
+
         <div className='chat-account-container'>
-            <button 
-                type='button' 
-                className={`logout btn btn-dark ${logoutDsp}`} 
+            <button
+                type='button'
+                className={`logout btn btn-dark ${logoutDsp}`}
                 onClick={onLogoutClick}
             >
                 <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="white" className="bi bi-door-open-fill" viewBox="0 0 16 16">
@@ -24,9 +29,9 @@ const AccountControls = ({ username, logoutDsp, onLogoutClick, onAccountClick })
                 </svg>
                 Log Out
             </button>
-            <button 
-                type='button' 
-                className='chat-account btn btn-dark' 
+            <button
+                type='button'
+                className='chat-account btn btn-dark'
                 onClick={onAccountClick}
             >
                 <div className='chat-account-svg'>
