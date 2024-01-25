@@ -8,7 +8,7 @@ import React from 'react';
 import CounselorList from './Sidebar/CounselorList';
 import AccountControls from './Sidebar/AccountControls';
 
-const Sidebar = ({ counselors, activeButtons, onCounselorClick, username, logoutDsp, onLogoutClick, onAccountClick }) => {
+const Sidebar = ({ counselors, activeButtons, onCounselorClick, handleThreadDelete, username, logoutDsp, onLogoutClick, onAccountClick }) => {
     return (
         <div className='sidebar-container'>
             <div className='sidebar-box'>
@@ -16,6 +16,7 @@ const Sidebar = ({ counselors, activeButtons, onCounselorClick, username, logout
                     counselors={counselors}
                     activeButtons={activeButtons}
                     onCounselorClick={onCounselorClick}
+                    handleThreadDelete={handleThreadDelete}
                 />
                 <AccountControls
                     username={username}

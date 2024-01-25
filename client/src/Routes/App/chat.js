@@ -11,7 +11,7 @@ import Sidebar from '../../Component/chat/Sidebar';
 import ChatRoom from '../../Component/chat/ChatRoom';
 
 // API
-import { checkLoginStatus, postMessage, createMessage, retrieveMessages, logoutClick, requestCounselor } from '../../API/chat/api';
+import { checkLoginStatus, postMessage, createMessage, retrieveMessages, logoutClick, requestCounselor, deleteThread } from '../../API/chat/api';
 
 function Chat() {
     // states
@@ -46,6 +46,11 @@ function Chat() {
         }
     }, [data, isError])
 
+    useEffect(() => {
+        console.log(threadId);
+    }, [threadId])
+
+
     // 상담사 클릭 처리 함수
     const counslerClick = async (index) => {
         setActiveButtons(activeButtons.map((_, i) => i === index));
@@ -68,12 +73,15 @@ function Chat() {
     };
 
     // 상담사 클릭 핸들러
-    const handleCounselorClick = async (index) => {
-        let counselorData = await counslerClick(index);
-        setThreadId(counselorData.thread_id);
-        let thread_id = counselorData.thread_id;
-        let dialogs = await retrieveMessages(thread_id);
-        setDialog(dialogs)
+    const handleCounselorClick = async (e, index) => {
+        if (e.target != document.querySelectorAll('.thread-delete-btn')[index]) {
+            let counselorData = await counslerClick(index);
+            setThreadId(counselorData.thread_id);
+            let thread_id = counselorData.thread_id;
+            let dialogs = await retrieveMessages(thread_id);
+            setDialog(dialogs)
+        }
+        
     };
 
     // 계정 버튼 클릭 핸들러
@@ -92,11 +100,21 @@ function Chat() {
             sendMessage();
         }
     };
+ 
+    const handleThreadDelete = async (e, index) => {
+        if (e.target == document.querySelectorAll('.thread-delete-btn')[index]) {
+            alert('정말 삭제하시겠습니까?')
+            let new_thread = await deleteThread(threadId);
+            console.log(new_thread);
+            setThreadId(new_thread.id);
+            setDialog([]);
+        }
+    }
 
     // 채팅 컴포넌트 UI 렌더링
     return (
         <div className="chat-container">
-            <Sidebar counselors={counselors} activeButtons={activeButtons} onCounselorClick={handleCounselorClick} username={username} logoutDsp={logoutDsp} onLogoutClick={logoutClick} onAccountClick={handleAccountClick} />
+            <Sidebar counselors={counselors} activeButtons={activeButtons} onCounselorClick={handleCounselorClick} handleThreadDelete={handleThreadDelete} username={username} logoutDsp={logoutDsp} onLogoutClick={logoutClick} onAccountClick={handleAccountClick} />
             <ChatRoom dialog={dialog} isPending={isPending} onMessageChange={handleMessageChange} onMessageSend={handleMessageSend} />
         </div >
     )

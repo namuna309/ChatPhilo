@@ -111,3 +111,24 @@ export async function requestCounselor(counselors, index) {
         throw error;
     }
 }
+
+// 선택된 상담사에 대한 요청을 서버에 전송
+export async function deleteThread(thread_id) {
+    const url = new URL(`${ENDPOINT}/c/delThread`);
+    url.searchParams.append('tId', thread_id);
+    const response = await fetch(url, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json; charset=utf-8",
+        },
+        credentials: 'include',
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+
+    return response.json();
+
+}
