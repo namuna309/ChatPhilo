@@ -16,9 +16,11 @@ export async function checkLoginStatus() {
 }
 
 // 메시지 전송 함수
-export async function postMessage(thread_id) {
+export async function postMessage(thread_id, csl) {
+    console.log(csl);
     const url = new URL(`${ENDPOINT}/c/getResp`);
     url.searchParams.append('tId', thread_id);
+    url.searchParams.append('csl', csl)
     const response = await fetch(url, {
         method: 'GET',
         headers: {

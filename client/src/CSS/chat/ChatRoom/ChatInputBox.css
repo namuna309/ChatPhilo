@@ -7,13 +7,14 @@
 .chat-textarea-box {
     width: 100%;
     background-color: #00000045;
-    border-radius: 15px;
-    padding: 0.8rem 1rem;
+ 
+    padding: 0.1rem 0 0 0;
 }
 
 .msgInput {
     width: 100%;
     padding: 5px 10px;
+    
 }
 
 .chat-enter {

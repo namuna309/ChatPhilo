@@ -32,7 +32,7 @@ router.get('/c/request', async (req, res) => {
             console.log(new_chatroom);
             return res.status(200).send({
                 thread_id: thread.id,
-                counselor: chat.counselor,
+                counselor: new_chatroom.counselor,
             });
         } else {
             return res.status(200).send({
@@ -86,10 +86,11 @@ router.post('/c/createMsg', async (req, res) => {
 // OpenAI에서 응답 가져오기
 router.get('/c/getResp', async (req, res) => {
     try {
+        console.log(config.openai_assistant_id[req.query.csl]);
         // 메세지 발송(run)
         const run = await openai.beta.threads.runs.create(
             req.query.tId,
-            { assistant_id: config.openai_assistant_id_schopenhauer }
+            { assistant_id: config.openai_assistant_id[req.query.csl] }
         );
 
         // 메세지 발송(run) 확인

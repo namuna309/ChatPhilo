@@ -20,7 +20,9 @@ function Chat() {
     const [dialog, setDialog] = useState([]);
     const [username, setUsername] = useState();
     const [logoutDsp, setLogout] = useState('logout-hide');
-    const [counselors] = useState(['Schopenhauer', 'Counselor Name2']);
+    const [counselors] = useState(['Schopenhauer', 'Adler', 'Jung']);
+    const counselorsDict = {Schopenhauer: 'schopenhauer', Adler: 'adler', Jung: 'jung'};
+    const [curCounselor, setCurCounselor] = useState();
     const [activeButtons, setActiveButtons] = useState([false, false]);
     const [threadId, setThreadId] = useState();
 
@@ -32,7 +34,7 @@ function Chat() {
     });
     // 메시지 전송을 위한 뮤테이션
     const { mutate, isPending } = useMutation({
-        mutationFn: postMessage,
+        mutationFn: () => postMessage(threadId, curCounselor),
         onSuccess: (reply) => setDialog(prev => [...prev, reply]),
         onError: (error) => console.error('Error posting message:', error),
     });
@@ -46,20 +48,16 @@ function Chat() {
         }
     }, [data, isError])
 
-    useEffect(() => {
-        console.log(threadId);
-    }, [threadId])
-
 
     // 상담사 클릭 처리 함수
     const counslerClick = async (index) => {
         setActiveButtons(activeButtons.map((_, i) => i === index));
+        setCurCounselor(counselorsDict[counselors[index]])
         return await requestCounselor(counselors, index)
     };
 
     // 메시지 전송 처리 함수
     const sendMessage = async () => {
-        console.log(threadId);
         if (threadId && message) {
 
             let createdMsg = await createMessage(threadId, message)
@@ -67,14 +65,14 @@ function Chat() {
 
             setMessage(null);
             document.getElementsByTagName('Input')[0].value = null;
-
-            mutate(threadId);
+            
+            mutate(threadId, curCounselor);
         }
     };
 
     // 상담사 클릭 핸들러
     const handleCounselorClick = async (e, index) => {
-        if (e.target != document.querySelectorAll('.thread-delete-btn')[index]) {
+        if (e.target != document.querySelectorAll('.counselor-delete-box')[index]) {
             let counselorData = await counslerClick(index);
             setThreadId(counselorData.thread_id);
             let thread_id = counselorData.thread_id;
@@ -102,7 +100,8 @@ function Chat() {
     };
  
     const handleThreadDelete = async (e, index) => {
-        if (e.target == document.querySelectorAll('.thread-delete-btn')[index]) {
+        console.log(e.target)
+        if (document.querySelectorAll('.counselor-delete-box')[index].contains(e.target)) {
             alert('정말 삭제하시겠습니까?')
             let new_thread = await deleteThread(threadId);
             console.log(new_thread);
@@ -115,7 +114,7 @@ function Chat() {
     return (
         <div className="chat-container">
             <Sidebar counselors={counselors} activeButtons={activeButtons} onCounselorClick={handleCounselorClick} handleThreadDelete={handleThreadDelete} username={username} logoutDsp={logoutDsp} onLogoutClick={logoutClick} onAccountClick={handleAccountClick} />
-            <ChatRoom dialog={dialog} isPending={isPending} onMessageChange={handleMessageChange} onMessageSend={handleMessageSend} />
+            <ChatRoom curCounselor={curCounselor} dialog={dialog} isPending={isPending} onMessageChange={handleMessageChange} onMessageSend={handleMessageSend} />
         </div >
     )
 }

@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactMarkdown from 'react-markdown';
 import '../../../CSS/chat/ChatRoom/ChatRoomBox.css'
 
 /**
@@ -10,7 +11,10 @@ import '../../../CSS/chat/ChatRoom/ChatRoomBox.css'
  * @returns React 컴포넌트 요소
 */
 
-const ChatRoomBox = ({ dialog, isPending }) => {
+const ChatRoomBox = ({ curCounselor, dialog, isPending }) => {
+    function capitalize(word) {
+        return word.charAt(0).toUpperCase() + word.slice(1)
+    }
     return (
         <div className='chat-room-box'>
             <div className='chat-dialog-box'>
@@ -19,11 +23,11 @@ const ChatRoomBox = ({ dialog, isPending }) => {
 
                     return (
                         <div className={`chat-${type}-box`} key={index}>
-                            <div className={`${type}-icon-box`}>
-                                {/* 아이콘 SVG */}
+                            <div className={`${type}-icon-box fw-bold`}>
+                                { type === 'user' ? 'Me' : capitalize(curCounselor) }
                             </div>
-                            <div className={`${type}-text-box`}>
-                                {message.content[0].text.value}
+                            <div className={`${type}-text-box p-3`}>
+                                {type === 'user' ? message.content[0].text.value : <ReactMarkdown>{message.content[0].text.value}</ReactMarkdown>}
                             </div>
                         </div>
                     );
@@ -32,7 +36,7 @@ const ChatRoomBox = ({ dialog, isPending }) => {
                 {isPending && (
                     <div className="chat-counselor-box">
                         <div className="counselor-icon-box"></div>
-                        <div className="counselor-text-box">
+                        <div className="counselor-text-box p-3">
                             <div className="spinner-border text-light" style={{ height: '1.4rem', width: '1.4rem' }} role="status">
                                 <span className="visually-hidden">Loading...</span>
                             </div>

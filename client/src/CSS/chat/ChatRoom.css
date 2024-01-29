@@ -1,7 +1,7 @@
 .chat-room-container {
     position: absolute;
     right: 0;
-    background-color: rgb(210, 210, 210);
+    background-color: rgb(240, 240, 240);
     width: 83%;
     height: 100%;
 }
@@ -9,6 +9,13 @@
 .chat-room-info {
     width: 100%;
     height: 7%;
+}
+
+.room-info-box {
+    width: 30%;
+    height: 100%;
+    display: flex;
+    align-items: center;
 }
 
 .chat-room-box-divider {

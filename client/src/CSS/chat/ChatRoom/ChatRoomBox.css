@@ -24,7 +24,7 @@
     width: 100%;
     padding: 10px 0;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
 }
@@ -47,11 +47,10 @@
 .counselor-text-box {
     height: auto;
     width: auto;
-    max-width: 75%;
-    padding: 8px 15px;
+    max-width: 85%;
     background-color: rgb(38, 38, 38);
     color: #fff;
-    border-radius: 21px;
+    border-radius: 0 21px 21px 21px;
     font-size: 15px;
     font-weight: lighter;
 }
@@ -61,8 +60,8 @@
     width: 100%;
     padding: 10px 0;
     display: flex;
-    flex-direction: row-reverse;
-    align-items: flex-start;
+    flex-direction: column;
+    align-items: flex-end;
     justify-content: flex-start;
     
 }
@@ -84,11 +83,10 @@
 .user-text-box {
     height: auto;
     width: auto;
-    max-width: 75%;
-    padding: 8px 15px;
+    max-width: 85%;
     background-color: rgb(55, 151, 240);
     color: #fff;
-    border-radius: 21px;
+    border-radius: 21px 0 21px 21px;
     font-size: 15px;
     font-weight: lighter;
 }
