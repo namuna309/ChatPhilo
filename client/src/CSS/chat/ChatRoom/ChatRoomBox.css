@@ -32,7 +32,7 @@
 
 .counselor-icon-box {
     height: 2.5rem;
-    width: 2.5rem;
+    width: auto;
     margin-right: 0.5rem;
     display: flex;
     align-items: center;
@@ -68,7 +68,7 @@
 
 .user-icon-box {
     height: 2.5rem;
-    width: 2.5rem;
+    width: auto;
     margin-left: 0.5rem;
     display: flex;
     align-items: center;

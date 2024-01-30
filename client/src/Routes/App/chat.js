@@ -2,7 +2,7 @@
 import '../../CSS/chat/chat.css'
 
 // Library
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery, useMutation } from '@tanstack/react-query';
 
@@ -25,6 +25,7 @@ function Chat() {
     const [curCounselor, setCurCounselor] = useState();
     const [activeButtons, setActiveButtons] = useState([false, false]);
     const [threadId, setThreadId] = useState();
+    const chatBoxRef = useRef(null);
 
     // 로그인 상태를 확인하는 쿼리, 매분마다 재요청
     const { data, isError } = useQuery({
@@ -47,6 +48,13 @@ function Chat() {
             setUsername(data.username);
         }
     }, [data, isError])
+
+    useEffect(() => {
+        if (chatBoxRef.current) {
+            chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+            console.log(chatBoxRef.current.scrollTop);
+        }
+    }, [dialog]);
 
 
     // 상담사 클릭 처리 함수
@@ -114,7 +122,7 @@ function Chat() {
     return (
         <div className="chat-container">
             <Sidebar counselors={counselors} activeButtons={activeButtons} onCounselorClick={handleCounselorClick} handleThreadDelete={handleThreadDelete} username={username} logoutDsp={logoutDsp} onLogoutClick={logoutClick} onAccountClick={handleAccountClick} />
-            <ChatRoom curCounselor={curCounselor} dialog={dialog} isPending={isPending} onMessageChange={handleMessageChange} onMessageSend={handleMessageSend} />
+            <ChatRoom curCounselor={curCounselor} dialog={dialog} isPending={isPending} chatBoxRef={chatBoxRef} onMessageChange={handleMessageChange} onMessageSend={handleMessageSend} />
         </div >
     )
 }
