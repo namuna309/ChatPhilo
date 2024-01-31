@@ -7,6 +7,8 @@ import React from 'react';
 // Component
 import ChatRoomBox from './ChatRoom/ChatRoomBox'; // 경로는 실제 파일 위치에 따라 조정해야 함
 import ChatInputBox from './ChatRoom/ChatInputBox'; // 경로는 실제 파일 위치에 따라 조정해야 함
+import CounselorProfiles from './ChatRoom/CounselorProfiles';
+import Attention from './ChatRoom/Attention';
 
 const ChatRoom = ({ curCounselor, dialog, isPending, chatBoxRef, onMessageChange, onMessageSend }) => {
     const fullNameDict = {
@@ -18,7 +20,9 @@ const ChatRoom = ({ curCounselor, dialog, isPending, chatBoxRef, onMessageChange
     return (
 
         <div className='chat-room-container'>
-            <div className='chat-room-info'>
+            { curCounselor ? (
+                <>
+                <div className='chat-room-info'>
                 <div className='room-info-box px-4'>
                     <div className='room-info-text fw-semibold fs-5'>{fullNameDict[curCounselor]}</div>
                 </div>
@@ -29,6 +33,12 @@ const ChatRoom = ({ curCounselor, dialog, isPending, chatBoxRef, onMessageChange
                 onMessageChange={onMessageChange}
                 onMessageSend={onMessageSend}
             />
+                </>
+            ) : <>
+            <CounselorProfiles/>
+            <Attention/>
+            </> }
+            
         </div>
     );
 };

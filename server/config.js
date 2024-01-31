@@ -20,6 +20,6 @@ module.exports = {
   openai_assistant_id: {
     schopenhauer: process.env.OPENAI_ASSISTANT_ID_SCHOPENHAUER,
     adler: process.env.OPENAI_ASSISTANT_ID_ADLER,
-    jung : process.env.OPENAI_ASSISTANT_ID_JUNG,
+    gonja : process.env.OPENAI_ASSISTANT_ID_GONJA,
   }
 };

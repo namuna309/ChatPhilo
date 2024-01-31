@@ -1,0 +1,44 @@
+.counselor-profiles-container {
+    width: 100%;
+    height: 80%;
+    padding: 6% 5% 3.5%;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.counselor-profile-box {
+    width: 32%;
+    height: 100%;
+    border-radius: 25px;
+    border: solid #D1D1D1 2px;
+}
+
+.counselor-profile-img {
+    width: 100%;
+    height: 40%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.counselor-profile-img img {
+    height: 100%;
+    width: auto;
+    padding: 5% 0;
+}
+
+.couselor-profile-name {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.couselor-profile-content {
+    width: 100%;
+    height: auto;
+    padding: 4% 5%;
+}

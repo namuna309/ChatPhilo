@@ -24,7 +24,7 @@ const ChatRoomBox = ({ curCounselor, dialog, isPending, chatBoxRef }) => {
                     return (
                         <div className={`chat-${type}-box`} key={index}>
                             <div className={`${type}-icon-box fw-bold fs-5`}>
-                                { type === 'user' ? 'Me' : capitalize(curCounselor) }
+                                { type === 'user' ? 'Me' : (curCounselor === 'gonja' ? '공자' : capitalize(curCounselor)) }
                             </div>
                             <div className={`${type}-text-box p-3`}>
                                 {type === 'user' ? message.content[0].text.value : <ReactMarkdown>{message.content[0].text.value}</ReactMarkdown>}

@@ -20,10 +20,10 @@ function Chat() {
     const [dialog, setDialog] = useState([]);
     const [username, setUsername] = useState();
     const [logoutDsp, setLogout] = useState('logout-hide');
-    const [counselors] = useState(['Schopenhauer', 'Adler', 'Jung']);
-    const counselorsDict = {Schopenhauer: 'schopenhauer', Adler: 'adler', Jung: 'jung'};
+    const [counselors] = useState(['Schopenhauer', 'Adler', '공자']);
+    const counselorsDict = {Schopenhauer: 'schopenhauer', Adler: 'adler', 공자: 'gongja'};
     const [curCounselor, setCurCounselor] = useState();
-    const [activeButtons, setActiveButtons] = useState([false, false]);
+    const [activeButtons, setActiveButtons] = useState([false, false, false]);
     const [threadId, setThreadId] = useState();
     const chatBoxRef = useRef(null);
 
