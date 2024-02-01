@@ -11,38 +11,70 @@ import '../../../CSS/chat/ChatRoom/ChatRoomBox.css'
  * @returns React 컴포넌트 요소
 */
 
-const ChatRoomBox = ({ curCounselor, dialog, isPending, chatBoxRef }) => {
+const ChatRoomBox = ({ curCounselor, dialog, isPending, chatBoxRef, dialogLoading }) => {
     function capitalize(word) {
         return word.charAt(0).toUpperCase() + word.slice(1)
     }
     return (
         <div className='chat-room-box' ref={chatBoxRef}>
             <div className='chat-dialog-box'>
-                {dialog.map((message, index) => {
-                    let type = message.role === 'user' ? 'user' : 'counselor';
+                {dialogLoading ?
+                    <div className="loading-container">
+                    {/* 여기에서 로딩 화면을 디자인합니다. */}
+                        {[...Array(5)].map((_, index) => (
+                            <div key={index} className="placeholder-wave">
+                                <span className="placeholder col-1"></span>
+                                <br/>
+                                <span className="placeholder col-9"></span>
+                                <br/>
+                                <span className="placeholder col-8"></span>
+                                <br/>
+                                <span className="placeholder col-3"></span>
+                                <br/>
+                                <span className="placeholder col-4"></span>
+                                <br/>
+                                <span className="placeholder col-2"></span>
+                                <br/>
+                                <span className="placeholder col-8"></span>
+                                <br/>
+                                <span className="placeholder col-5"></span>
+                            </div>
+                        ))}
+                </div> 
+                :
+                    <>
+                        {
+                            dialog.map((message, index) => {
+                                let type = message.role === 'user' ? 'user' : 'counselor';
 
-                    return (
-                        <div className={`chat-${type}-box`} key={index}>
-                            <div className={`${type}-icon-box fw-bold fs-5`}>
-                                { type === 'user' ? 'Me' : (curCounselor === 'gonja' ? '공자' : capitalize(curCounselor)) }
-                            </div>
-                            <div className={`${type}-text-box p-3`}>
-                                {type === 'user' ? message.content[0].text.value : <ReactMarkdown>{message.content[0].text.value}</ReactMarkdown>}
-                            </div>
-                        </div>
-                    );
-                })}
+                                return (
+                                    <div className={`chat-${type}-box`} key={index}>
+                                        <div className={`${type}-icon-box fw-bold fs-5`}>
+                                            {type === 'user' ? 'Me' : (curCounselor === 'gonja' ? '공자' : capitalize(curCounselor))}
+                                        </div>
+                                        <div className={`${type}-text-box p-3`}>
+                                            {type === 'user' ? message.content[0].text.value : <ReactMarkdown>{message.content[0].text.value}</ReactMarkdown>}
+                                        </div>
+                                    </div>
+                                );
+                            })
+                        }
 
-                {isPending && (
-                    <div className="chat-counselor-box">
-                        <div className="counselor-icon-box"></div>
-                        <div className="counselor-text-box p-3">
-                            <div className="spinner-border text-light" style={{ height: '1.4rem', width: '1.4rem' }} role="status">
-                                <span className="visually-hidden">Loading...</span>
-                            </div>
-                        </div>
-                    </div>
-                )}
+                        {
+                            isPending && (
+                                <div className="chat-counselor-box">
+                                    <div className="counselor-icon-box"></div>
+                                    <div className="counselor-text-box p-3">
+                                        <div className="spinner-border text-light" style={{ height: '1.4rem', width: '1.4rem' }} role="status">
+                                            <span className="visually-hidden">Loading...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            )
+                        }
+                    </>
+                }
+
             </div>
         </div>
     );

@@ -26,6 +26,7 @@ function Chat() {
     const [activeButtons, setActiveButtons] = useState([false, false, false]);
     const [threadId, setThreadId] = useState();
     const chatBoxRef = useRef(null);
+    const [dialogLoading, setDialogLoading] = useState(false);
 
     // 로그인 상태를 확인하는 쿼리, 매분마다 재요청
     const { data, isError } = useQuery({
@@ -61,6 +62,7 @@ function Chat() {
     const counslerClick = async (index) => {
         setActiveButtons(activeButtons.map((_, i) => i === index));
         setCurCounselor(counselorsDict[counselors[index]])
+        setDialogLoading(true);
         return await requestCounselor(counselors, index)
     };
 
@@ -85,6 +87,7 @@ function Chat() {
             setThreadId(counselorData.thread_id);
             let thread_id = counselorData.thread_id;
             let dialogs = await retrieveMessages(thread_id);
+            setDialogLoading(false);
             setDialog(dialogs)
         }
         
@@ -122,7 +125,7 @@ function Chat() {
     return (
         <div className="chat-container">
             <Sidebar counselors={counselors} activeButtons={activeButtons} onCounselorClick={handleCounselorClick} handleThreadDelete={handleThreadDelete} username={username} logoutDsp={logoutDsp} onLogoutClick={logoutClick} onAccountClick={handleAccountClick} />
-            <ChatRoom curCounselor={curCounselor} dialog={dialog} isPending={isPending} chatBoxRef={chatBoxRef} onMessageChange={handleMessageChange} onMessageSend={handleMessageSend} />
+            <ChatRoom curCounselor={curCounselor} dialog={dialog} isPending={isPending} chatBoxRef={chatBoxRef} onMessageChange={handleMessageChange} onMessageSend={handleMessageSend} dialogLoading={dialogLoading}/>
         </div >
     )
 }

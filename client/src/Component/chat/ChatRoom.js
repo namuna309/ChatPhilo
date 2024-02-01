@@ -10,7 +10,7 @@ import ChatInputBox from './ChatRoom/ChatInputBox'; // 경로는 실제 파일 �
 import CounselorProfiles from './ChatRoom/CounselorProfiles';
 import Attention from './ChatRoom/Attention';
 
-const ChatRoom = ({ curCounselor, dialog, isPending, chatBoxRef, onMessageChange, onMessageSend }) => {
+const ChatRoom = ({ curCounselor, dialog, isPending, chatBoxRef, onMessageChange, onMessageSend, dialogLoading }) => {
     const fullNameDict = {
         'schopenhauer': 'Arthur Schopenhauer',
         'adler': 'Alfred Adler', 
@@ -27,7 +27,7 @@ const ChatRoom = ({ curCounselor, dialog, isPending, chatBoxRef, onMessageChange
                     <div className='room-info-text fw-semibold fs-5'>{fullNameDict[curCounselor]}</div>
                 </div>
             </div>
-            <ChatRoomBox curCounselor={curCounselor} dialog={dialog} isPending={isPending} chatBoxRef={chatBoxRef}/>
+            <ChatRoomBox curCounselor={curCounselor} dialog={dialog} isPending={isPending} chatBoxRef={chatBoxRef} dialogLoading={dialogLoading}/>
             <div className='chat-room-box-divider'></div>
             <ChatInputBox
                 onMessageChange={onMessageChange}
