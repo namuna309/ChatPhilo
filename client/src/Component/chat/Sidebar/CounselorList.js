@@ -2,7 +2,11 @@
 import '../../../CSS/chat/Sidebar/CounselorList.css'
 
 // Library
-import React from 'react';
+import React, { useState } from 'react';
+// Img
+import schopenhauerImg from '../../../Img/profile/SchopenhauerProfilePicture.png';
+import adlerImg from '../../../Img/profile/AdlerProfilePicture.png'
+import confuciusImg from '../../../Img/profile/ConfuciusProfilePicture.png'
 
 /**
  * CounselorList 컴포넌트
@@ -16,6 +20,7 @@ import React from 'react';
  */
 
 const CounselorList = ({ counselors, activeButtons, onCounselorClick, handleThreadDelete }) => {
+    const [profileImg, setProfileImg] = useState([schopenhauerImg, adlerImg, confuciusImg])
     return (
         <div className='chat-list'>
             {counselors.map((name, index) => (
@@ -26,7 +31,7 @@ const CounselorList = ({ counselors, activeButtons, onCounselorClick, handleThre
                         onClick={(e) => onCounselorClick(e, index)}
                     >
                         <div className='counselor-img-box btn'>
-                            <div className='counselor-img'></div>
+                            <div className='counselor-img'><img src={profileImg[index]}/></div>
                         </div>
                         <div className='counselor-name'>
                             {name}

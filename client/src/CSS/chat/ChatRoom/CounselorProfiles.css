@@ -29,16 +29,41 @@
     padding: 5% 0;
 }
 
-.couselor-profile-name {
+.counselor-profile-name {
     width: 100%;
-    height: auto;
+    height: 10%;
+    margin-bottom: 1rem;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.couselor-profile-content {
+.counselor-profile-content {
     width: 100%;
     height: auto;
     padding: 4% 5%;
+    overflow: auto; /* 내용이 박스를 넘어갈 경우 스크롤바를 표시 */
+    max-height: 45%; /* 박스의 최대 높이를 설정 */
 }
+
+.counselor-profile-content::-webkit-scrollbar-button {
+    width: 0;
+    height: 0;
+  }
+  .counselor-profile-content::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .counselor-profile-content::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+  
+  .counselor-profile-content::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    background-color: rgb(30, 30, 30);
+  }
+  
+  .counselor-profile-content::-webkit-scrollbar-button {
+    width: 0;
+    height: 0;
+  }

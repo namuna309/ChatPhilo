@@ -8,7 +8,7 @@
 
 .counselor-container {
     width: 100%;
-    height: 50px;
+    height: 4rem;
     padding: 2px 8px;
     display: flex;
     flex-direction: row;
@@ -32,22 +32,24 @@
 }
 
 .counselor-img-box {
-    height: 2.5rem;
-    width: 2.5rem;
+    height: 3.5rem;
+    width: 3.5rem;
     padding: 3px;
 }
 
 .counselor-img {
     height: 100%;
     width: 100%;
-    border-radius: 99999px;
-    background-color: yellow;
+}
+
+.counselor-img img {
+    height: 100%;
 }
 
 .counselor-name {
     height: 100%;
     width: 68%;
-    margin: 0 5px;
+    margin-left: 0.6rem;
     display: flex;
     flex-direction: row;
     align-items: center;

@@ -14,7 +14,7 @@ const ChatRoom = ({ curCounselor, dialog, isPending, chatBoxRef, onMessageChange
     const fullNameDict = {
         'schopenhauer': 'Arthur Schopenhauer',
         'adler': 'Alfred Adler', 
-        'jung': 'Carl Jung',
+        'gongja': '공자',
     }
     
     return (
