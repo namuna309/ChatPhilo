@@ -68,4 +68,67 @@
     height: 0;
   }
 
-  
+  @media screen and (max-width:899px) {
+    /* 모바일 가로, 타블렛 세로 */
+    .counselor-profiles-container {
+      width: 100%;
+      height: 80%;
+      padding: 10% 5% 3.5%;
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: space-between;
+  }
+    .counselor-profile-img img {
+      height: auto;
+      width: 80%;
+      padding: 5% 0;
+    }
+}
+
+@media screen and (max-width:599px) {
+    /* 모바일 세로 */
+    .counselor-profiles-container {
+      width: 100%;
+      height: 80%;
+      padding: 15% 10% 3.5%;
+      display: flex;
+      flex-direction: column;
+      overflow: auto;
+    }
+
+    .counselor-profile-box {
+      width: 100%;
+      height: 100%;
+      margin-bottom: 2rem;
+      border-radius: 25px;
+      border: solid #D1D1D1 2px;
+  }
+
+    .counselor-profile-img img {
+      height: 100%;
+      width: auto;
+      padding: 5% 0;
+    }
+    .counselor-profiles-container::-webkit-scrollbar-button {
+      width: 0;
+      height: 0;
+    }
+    .counselor-profiles-container::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .counselor-profiles-container::-webkit-scrollbar-track {
+      background-color: transparent;
+    }
+    
+    .counselor-profiles-container::-webkit-scrollbar-thumb {
+      border-radius: 3px;
+      background-color: rgb(30, 30, 30);
+    }
+    
+    .counselor-profiles-container::-webkit-scrollbar-button {
+      width: 0;
+      height: 0;
+    }
+}

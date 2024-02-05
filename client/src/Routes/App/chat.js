@@ -27,6 +27,9 @@ function Chat() {
     const [threadId, setThreadId] = useState();
     const chatBoxRef = useRef(null);
     const [dialogLoading, setDialogLoading] = useState(false);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [width, setWidth] = useState(window.innerWidth);
+    const [isMobile, setIsMobile] = useState(false);
 
     // 로그인 상태를 확인하는 쿼리, 매분마다 재요청
     const { data, isError } = useQuery({
@@ -56,6 +59,19 @@ function Chat() {
             console.log(chatBoxRef.current.scrollTop);
         }
     }, [dialog]);
+
+    useEffect(() => {
+        window.addEventListener("resize", handleResize);
+        return () => {
+            // cleanup
+            window.removeEventListener("resize", handleResize);
+        };
+    }, []);
+
+    useEffect(() => {
+        if (width > 899) setIsMobile(false);
+        else setIsMobile(true);
+    }, [width])
 
 
     // 상담사 클릭 처리 함수
@@ -109,9 +125,16 @@ function Chat() {
             sendMessage();
         }
     };
+
+    const handleSidebar = () => {
+        setIsSidebarOpen(!isSidebarOpen);
+    }
+
+    const handleResize = () => {
+        setWidth(window.innerWidth);
+    };
  
     const handleThreadDelete = async (e, index) => {
-        console.log(e.target)
         if (document.querySelectorAll('.counselor-delete-box')[index].contains(e.target)) {
             alert('정말 삭제하시겠습니까?')
             let new_thread = await deleteThread(threadId);
@@ -121,11 +144,17 @@ function Chat() {
         }
     }
 
+    const handleSidebarCloseBtn = (e) => {
+        if (document.querySelector('.sidebar-close-btn').contains(e.target)) {
+            setIsSidebarOpen(false);
+        }
+    }
+
     // 채팅 컴포넌트 UI 렌더링
     return (
         <div className="chat-container">
-            <Sidebar counselors={counselors} activeButtons={activeButtons} onCounselorClick={handleCounselorClick} handleThreadDelete={handleThreadDelete} username={username} logoutDsp={logoutDsp} onLogoutClick={logoutClick} onAccountClick={handleAccountClick} />
-            <ChatRoom curCounselor={curCounselor} dialog={dialog} isPending={isPending} chatBoxRef={chatBoxRef} onMessageChange={handleMessageChange} onMessageSend={handleMessageSend} dialogLoading={dialogLoading}/>
+            <Sidebar isMobile={isMobile} isSidebarOpen={isSidebarOpen} handleSidebarCloseBtn={handleSidebarCloseBtn} counselors={counselors} activeButtons={activeButtons} onCounselorClick={handleCounselorClick} handleThreadDelete={handleThreadDelete} username={username} logoutDsp={logoutDsp} onLogoutClick={logoutClick} onAccountClick={handleAccountClick} />
+            <ChatRoom handleSidebar={handleSidebar} curCounselor={curCounselor} dialog={dialog} isPending={isPending} chatBoxRef={chatBoxRef} onMessageChange={handleMessageChange} onMessageSend={handleMessageSend} dialogLoading={dialogLoading}/>
         </div >
     )
 }

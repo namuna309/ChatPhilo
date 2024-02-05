@@ -1,4 +1,5 @@
 .sidebar-container {
+    position: relative;
     background-color: black;
     width: 17%;
     height: 100%;
@@ -10,3 +11,84 @@
     height: 100%;
     width: 100%;
 }
+ .sidebar-close-btn {
+    display: none;
+ }
+
+
+@media screen and (max-width:899px) {
+    /* 모바일 가로, 타블렛 세로 */
+    .sidebar-container {
+        position: absolute;
+        left: 0;
+        width: 20rem;
+        height: 100%;
+        padding: 0;
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        background-color: rgba( 255, 255, 255, 0 );
+        z-index: 1000;
+    }
+    .sidebar-box {
+        position: relative;
+        height: 100%;
+        width: 100%;
+        background-color: black;
+        padding: 1rem 0.5rem;
+    }
+    
+    .sidebar-close-btn {
+        display: block;
+        width: 2.5rem;
+        height: auto;
+        margin-left: 0.4rem;
+        margin-top: 20px;
+        cursor: pointer;
+    }
+
+    .sidebar-close-btn svg {
+        width: 100%;
+        height: 100%;
+        background-color: white;
+    }
+
+  }
+  
+  @media screen and (max-width:599px) {
+    /* 모바일 세로 */
+    .sidebar-container {
+        position: absolute;
+        left: 0;
+        width: 20rem;
+        height: 100%;
+        padding: 0;
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        background-color: rgba( 255, 255, 255, 0 );
+        z-index: 1000;
+    }
+    .sidebar-box {
+        position: relative;
+        height: 100%;
+        width: 100%;
+        background-color: black;
+        padding: 1rem 0.5rem;
+    }
+    
+    .sidebar-close-btn {
+        display: block;
+        width: 2.5rem;
+        height: auto;
+        margin-left: 0.4rem;
+        margin-top: 20px;
+        cursor: pointer;
+    }
+    .sidebar-close-btn svg {
+        width: 100%;
+        height: 100%;
+        background-color: white;
+    }
+
+  }
