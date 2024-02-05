@@ -20,7 +20,6 @@
     background-color: black;
 }
 
-
 /* 배너 이미지 */
 .banner-box {
     overflow: hidden;
@@ -45,7 +44,6 @@
     transition: opacity 1s ease-in-out;
 }
 
-
 /* 로그인 및 회원가입 영역 */
 .start-box {
     width: 100%;
@@ -63,6 +61,7 @@
     font-size: 29px;
     font-weight: 500;
 }
+
 .btn-box {
     display: flex;
     flex-direction: row;
@@ -80,3 +79,44 @@
     font-weight: bold;
     font-size: 18px;
 }
+
+
+@media screen and (max-width:899px) {
+    /* 모바일 가로, 타블렛 세로 */
+    .main-container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+    }
+
+    .banner-box {
+        position: relative;
+        display: none;
+    }
+
+    .account-box {
+        position: relative;
+        width: 100%;
+        height: 100%;
+    }
+  }
+  
+  @media screen and (max-width:599px) {
+    /* 모바일 세로 */
+    .main-container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+    }
+    
+    .banner-box {
+        position: relative;
+        display: none;
+    }
+
+    .account-box {
+        position: relative;
+        width: 100%;
+        height: 100%;
+    }
+  }
