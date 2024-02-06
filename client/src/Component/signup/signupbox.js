@@ -7,7 +7,7 @@ import iconApple from '../../Img/icon/icon-apple.png';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-const ENDPOINT = process.env.ENDPOINT;
+const ENDPOINT = process.env.REACT_APP_ENDPOINT;
 
 function SignupBox() {
     const [username, setUsername] = useState('');
