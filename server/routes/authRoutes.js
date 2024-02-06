@@ -13,11 +13,11 @@ router.post('/login', async (req, res, next) => {
     passport.authenticate('local', (error, user, info) => {
         if (error) return res.status(500).json(error);
         if (!user) {
-            return res.redirect('http://localhost:3000/login?state=is-invalid');
+            return res.redirect(`${config.endpoint}/login?state=is-invalid`);
         }
         req.logIn(user, (err) => {
             if (err) return next(err);
-            return res.redirect('http://localhost:3000/chat');
+            return res.redirect(`${config.endpoint}/chat`);
         });
     })(req, res, next);
 });
@@ -92,7 +92,7 @@ router.post('/send-code', async (req, res) => {
                 expireDate: expires,
                 isVerified: false,
             })
-            res.redirect('http://localhost:3000/main');
+            res.redirect(`${config.endpoint}/main`);
         }
     });
 });
@@ -106,7 +106,7 @@ router.get('/register-verify', async (req, res) => {
     if (result && result.token == req.query.token && now <= result.expireDate) {
         let update_res = await db.collection('user').updateOne({ username: req.query.username }, { $set: { isVerified: true } });
         console.log('인증 성공');
-        res.redirect('http://localhost:3000');
+        res.redirect(`${config.endpoint}`);
     } else {
         if (!result) res.send('유저 정보 없음');
         else if (result.token != req.query.token) res.send('토큰이 잘못됨');
@@ -120,10 +120,10 @@ router.get('/register-verify', async (req, res) => {
 router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 router.get('/auth/google/callback', 
-    passport.authenticate('google', { failureRedirect: 'http://localhost:3000/login' }),
+    passport.authenticate('google', { failureRedirect: `${config.endpoint}/login` }),
     function(req, res) {
         // 성공적인 인증 후 리다이렉트
-        res.redirect('http://localhost:3000/chat');
+        res.redirect(`${config.endpoint}/chat`);
 });
 
 // 회원가입 인증 링크 처리
@@ -135,7 +135,7 @@ router.get('/register-verify', async (req, res) => {
     if (result && result.token == req.query.token && now <= result.expireDate) {
         let update_res = await db.collection('user').updateOne({ username: req.query.username }, { $set: { isVerified: true } });
         console.log('인증 성공');
-        res.redirect('http://localhost:3000');
+        res.redirect(`${config.endpoint}`);
     } else {
         if (!result) res.send('유저 정보 없음');
         else if (result.token != req.query.token) res.send('토큰이 잘못됨');
@@ -148,6 +148,7 @@ router.get('/register-verify', async (req, res) => {
 // 세션 확인
 router.get('/session', async (req, res) => {
     let user_data = req.user;
+    console.log(req.user);
     if(!user_data) console.log('세션 만료');
     else console.log('id: ', user_data._id, 'username: ', user_data.username, ' => 로그인') 
     return res.send(user_data);

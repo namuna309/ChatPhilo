@@ -14,7 +14,7 @@ const app = express();
 
 // CORS 설정
 app.use(cors({
-    origin: 'http://localhost:3000', // 클라이언트 주소
+    origin: `${config.endpoint}`, // 클라이언트 주소
     credentials: true
 }));
 
