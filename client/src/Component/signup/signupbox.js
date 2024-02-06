@@ -47,12 +47,11 @@ function SignupBox() {
 
     // input에서 blur했을 때 이메일 중복 확인
     function checkDuplicate_onblur(id) {
-        console.log(`${ENDPOINT}/checkDuplicate?username=${trimed_id}`);
 
         let trimed_id = id.trim();
         // 이메일 형식 확인
         let is_validform = /\S+@\S+\.\S+/.test(trimed_id);
-
+        console.log(`${ENDPOINT}/checkDuplicate?username=${trimed_id}`);
         fetch(`${ENDPOINT}/checkDuplicate?username=${trimed_id}`, {
             method : 'POST',
         }).then(res => res.text()).then((res) => {
