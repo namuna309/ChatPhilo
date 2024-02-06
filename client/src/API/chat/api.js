@@ -84,7 +84,7 @@ export async function logoutClick() {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         console.log('로그아웃 성공')
-        window.location.href = 'http://localhost:3000'
+        window.location.href = 'https://chat-philo.vercel.app'
     } catch (error) {
         console.error("Request failed:", error);
     }
