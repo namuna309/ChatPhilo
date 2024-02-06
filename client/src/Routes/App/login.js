@@ -22,7 +22,6 @@ function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [dspInvalid, setDspinvalid] = useState(invalid);
-    console.log(ENDPOINT);
     const handleLogin = () => {
         window.open(`${ENDPOINT}/auth/google`, "_self");
     };
@@ -41,7 +40,6 @@ function Login() {
         })
         .then((res) => { return res.json() })
         .then(res => {
-            console.log(res);
             navigate('../chat');
         })
         .catch(err => console.log(err));
@@ -52,10 +50,7 @@ function Login() {
         setUsername('');
         setPassword('');
         if (invalid == true) setDspinvalid('is-invalid');
-        else if(invalid == null) setDspinvalid('');
-
-        console.log(dspInvalid);
-        
+        else if(invalid == null) setDspinvalid('');        
     }, []);
     
 
