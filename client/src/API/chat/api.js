@@ -1,4 +1,4 @@
-const ENDPOINT = "http://localhost:8080";
+const ENDPOINT = process.env.REACT_APP_ENDPOINT;
 
 // 로그인 상태 체크 함수
 export async function checkLoginStatus() {

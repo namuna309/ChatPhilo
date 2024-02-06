@@ -7,6 +7,7 @@ import iconApple from '../../Img/icon/icon-apple.png';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
+const ENDPOINT = process.env.ENDPOINT;
 
 function SignupBox() {
     const [username, setUsername] = useState('');
@@ -26,7 +27,7 @@ function SignupBox() {
     const [dispSocial, setDispsocial] = useState('');
     
     const handleLogin = () => {
-        window.open("http://localhost:8080/auth/google", "_self");
+        window.open(`${ENDPOINT}/auth/google`, "_self");
     };
 
     useEffect(() => {
@@ -50,7 +51,7 @@ function SignupBox() {
         // 이메일 형식 확인
         let is_validform = /\S+@\S+\.\S+/.test(trimed_id);
 
-        fetch(`http://localhost:8080/checkDuplicate?username=${trimed_id}`, {
+        fetch(`${ENDPOINT}/checkDuplicate?username=${trimed_id}`, {
             method : 'POST',
         }).then(res => res.text()).then((res) => {
             console.log(res);
@@ -86,7 +87,7 @@ function SignupBox() {
         let is_validform = /\S+@\S+\.\S+/.test(trimed_id);
 
         console.log(id);
-        fetch(`http://localhost:8080/checkDuplicate?username=${trimed_id}`, {
+        fetch(`${ENDPOINT}/checkDuplicate?username=${trimed_id}`, {
             method : 'POST',
         }).then(res => res.text()).then((res) => {
             console.log(res);
@@ -134,7 +135,7 @@ function SignupBox() {
         <>
             <div className='signup-box'>
                 <span>Welcome!</span>
-                <form className="signup-form" action="http://localhost:8080/send-code" method="POST">
+                <form className="signup-form" action={`${ENDPOINT}/send-code`} method="POST">
                     <div className={`form-floating ${isInvalid}`}>
                         <input className={`form-control ${isInvalid}`} type="email" name='username' placeholder="Email address" onChange={(e) => setUsername(e.target.value)} onBlur={(e) => checkDuplicate_onblur(username)} required />
                         <label htmlFor="floatingInput">Email address</label>

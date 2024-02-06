@@ -11,6 +11,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from "axios"
 
+const ENDPOINT = process.env.REACT_APP_ENDPOINT;
+
 function Login() {
     let params =  new URLSearchParams(window.location.search);
     const invalid = params.get('state');
@@ -20,9 +22,9 @@ function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [dspInvalid, setDspinvalid] = useState(invalid);
-
+    console.log(ENDPOINT);
     const handleLogin = () => {
-        window.open("http://localhost:8080/auth/google", "_self");
+        window.open(`${ENDPOINT}/auth/google`, "_self");
     };
 
     let [submit, setSubmit] = useState(false);
@@ -30,7 +32,7 @@ function Login() {
     let status;
 
     useEffect(() => {
-        fetch('http://localhost:8080/session', {
+        fetch(`${ENDPOINT}/session`, {
             method: "get",
             headers: {
                 "Content-Type": "application/json; charset=utf-8"
@@ -63,7 +65,7 @@ function Login() {
         <div className="login-container">
            <div className='login-box'>
                 <span>Hello! How are you</span>
-                    <form className="login-form" action='http://localhost:8080/login' method='POST'>
+                    <form className="login-form" action={`${ENDPOINT}/login`} method='POST'>
                         <div className="form-floating">
                             <input className='form-control' type='email' name='username' placeholder='Email address' onChange={(e) => setUsername(e.target.value)} required />
                             <label htmlFor="floatingInput">Email address</label>
